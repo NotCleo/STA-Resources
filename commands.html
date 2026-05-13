@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDC Command Reference — Senior STA Engineer</title>
+<style>
+  :root {
+    --bg: #0d1117; --bg2: #161b22; --bg3: #21262d;
+    --border: #30363d; --border2: #484f58;
+    --text: #e6edf3; --text2: #8b949e; --text3: #6e7681;
+    --blue: #58a6ff; --blue-bg: #0d2a4a; --blue-border: #1f6feb;
+    --green: #3fb950; --green-bg: #0d2a1a; --green-border: #1a7f37;
+    --amber: #d29922; --amber-bg: #2d1f00; --amber-border: #9e6a03;
+    --teal: #39d0ba; --teal-bg: #0a2a28; --teal-border: #1a8077;
+    --purple: #a371f7; --purple-bg: #1e1030; --purple-border: #6e40c9;
+    --coral: #f97583; --coral-bg: #2a0d14; --coral-border: #8f1f2e;
+    --pink: #db61a2; --pink-bg: #2a0d1f; --pink-border: #8f2160;
+    --mono: 'Courier New', Courier, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.6; }
+
+  header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 20px 32px; position: sticky; top: 0; z-index: 100; }
+  .header-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  h1 { font-size: 20px; font-weight: 600; color: var(--blue); letter-spacing: -0.3px; }
+  .subtitle { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .search-box { flex: 1; min-width: 220px; max-width: 400px; position: relative; }
+  .search-box input { width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px 8px 36px; color: var(--text); font-size: 13px; outline: none; transition: border-color 0.15s; }
+  .search-box input:focus { border-color: var(--blue-border); }
+  .search-box svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text3); width: 16px; height: 16px; }
+  .stats { font-size: 12px; color: var(--text3); margin-top: 12px; }
+  .stats b { color: var(--text2); }
+
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+  .filter-btn { padding: 4px 10px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--text2); font-size: 11px; cursor: pointer; transition: all 0.15s; }
+  .filter-btn:hover { border-color: var(--border2); color: var(--text); }
+  .filter-btn.active { color: #fff; font-weight: 500; }
+  .filter-btn[data-cat="all"].active { background: var(--bg3); border-color: var(--border2); color: var(--text); }
+  .filter-btn[data-cat="clock"].active { background: var(--blue-bg); border-color: var(--blue-border); color: var(--blue); }
+  .filter-btn[data-cat="io"].active { background: var(--green-bg); border-color: var(--green-border); color: var(--green); }
+  .filter-btn[data-cat="exception"].active { background: var(--coral-bg); border-color: var(--coral-border); color: var(--coral); }
+  .filter-btn[data-cat="env"].active { background: var(--amber-bg); border-color: var(--amber-border); color: var(--amber); }
+  .filter-btn[data-cat="drc"].active { background: var(--purple-bg); border-color: var(--purple-border); color: var(--purple); }
+  .filter-btn[data-cat="port"].active { background: var(--teal-bg); border-color: var(--teal-border); color: var(--teal); }
+  .filter-btn[data-cat="path"].active { background: var(--pink-bg); border-color: var(--pink-border); color: var(--pink); }
+  .filter-btn[data-cat="query"].active { background: var(--bg3); border-color: #58a6ff88; color: #58a6ff; }
+  .filter-btn[data-cat="misc"].active { background: var(--bg3); border-color: var(--border2); color: var(--text2); }
+
+  main { padding: 20px 32px; max-width: 1400px; margin: 0 auto; }
+
+  .section-header { display: flex; align-items: center; gap: 10px; margin: 28px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .section-header h2 { font-size: 15px; font-weight: 600; }
+  .section-count { font-size: 11px; padding: 2px 7px; border-radius: 10px; font-weight: 500; }
+
+  .cmd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(540px, 1fr)); gap: 16px; }
+
+  .cmd-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: border-color 0.15s; }
+  .cmd-card:hover { border-color: var(--border2); }
+  .cmd-card.hidden { display: none; }
+
+  .cmd-header { padding: 12px 16px; display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; border-bottom: 1px solid var(--border); }
+  .cmd-name-block { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .cmd-name { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--blue); }
+  .cat-badge { font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 500; letter-spacing: 0.3px; white-space: nowrap; }
+  .cmd-purpose { font-size: 12px; color: var(--text2); margin-top: 4px; }
+
+  .cat-clock .cmd-name { color: var(--blue); }
+  .cat-clock .cat-badge { background: var(--blue-bg); border: 1px solid var(--blue-border); color: var(--blue); }
+  .cat-io .cmd-name { color: var(--green); }
+  .cat-io .cat-badge { background: var(--green-bg); border: 1px solid var(--green-border); color: var(--green); }
+  .cat-exception .cmd-name { color: var(--coral); }
+  .cat-exception .cat-badge { background: var(--coral-bg); border: 1px solid var(--coral-border); color: var(--coral); }
+  .cat-env .cmd-name { color: var(--amber); }
+  .cat-env .cat-badge { background: var(--amber-bg); border: 1px solid var(--amber-border); color: var(--amber); }
+  .cat-drc .cmd-name { color: var(--purple); }
+  .cat-drc .cat-badge { background: var(--purple-bg); border: 1px solid var(--purple-border); color: var(--purple); }
+  .cat-port .cmd-name { color: var(--teal); }
+  .cat-port .cat-badge { background: var(--teal-bg); border: 1px solid var(--teal-border); color: var(--teal); }
+  .cat-path .cmd-name { color: var(--pink); }
+  .cat-path .cat-badge { background: var(--pink-bg); border: 1px solid var(--pink-border); color: var(--pink); }
+  .cat-query .cmd-name { color: #79c0ff; }
+  .cat-query .cat-badge { background: #0c2540; border: 1px solid #1f6feb88; color: #79c0ff; }
+  .cat-misc .cmd-name { color: var(--text); }
+  .cat-misc .cat-badge { background: var(--bg3); border: 1px solid var(--border2); color: var(--text2); }
+
+  .cmd-body { padding: 12px 16px; }
+  .syntax-block { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; font-family: var(--mono); font-size: 12px; color: #e6edf3; line-height: 1.8; overflow-x: auto; white-space: pre-wrap; word-break: break-word; margin-bottom: 12px; }
+  .syntax-kw { color: #ff7b72; }
+  .syntax-opt { color: #d2a8ff; }
+  .syntax-val { color: #ffa657; }
+  .syntax-var { color: #79c0ff; }
+  .syntax-str { color: #a5d6ff; }
+
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .info-block { }
+  .info-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); margin-bottom: 4px; }
+  .info-text { font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .info-text.full { grid-column: 1/-1; }
+
+  .flags-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .flags-table th { text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); padding: 4px 8px; border-bottom: 1px solid var(--border); }
+  .flags-table td { font-size: 12px; padding: 5px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .flags-table tr:last-child td { border-bottom: none; }
+  .flags-table .flag { font-family: var(--mono); font-size: 11px; color: var(--text); white-space: nowrap; }
+  .flags-table .fdesc { color: var(--text2); }
+
+  .example-block { margin-top: 10px; }
+  .example-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); margin-bottom: 4px; }
+  .example-code { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; font-family: var(--mono); font-size: 11.5px; color: #e6edf3; line-height: 1.8; overflow-x: auto; white-space: pre; }
+  .ex-comment { color: var(--text3); }
+  .ex-kw { color: #ff7b72; }
+  .ex-val { color: #ffa657; }
+  .ex-str { color: #a5d6ff; }
+  .ex-flag { color: #d2a8ff; }
+  .ex-num { color: #79c0ff; }
+
+  .warning-box { background: var(--amber-bg); border: 1px solid var(--amber-border); border-radius: 6px; padding: 8px 12px; font-size: 12px; color: #d29922; margin-top: 10px; }
+  .warning-box b { font-weight: 600; }
+  .note-box { background: var(--blue-bg); border: 1px solid var(--blue-border); border-radius: 6px; padding: 8px 12px; font-size: 12px; color: var(--blue); margin-top: 10px; }
+
+  .toggle-btn { font-size: 11px; color: var(--text3); background: none; border: none; cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: color 0.15s; white-space: nowrap; flex-shrink: 0; }
+  .toggle-btn:hover { color: var(--text); background: var(--bg3); }
+  .collapsible { overflow: hidden; transition: max-height 0.3s ease; }
+  .collapsible.collapsed { max-height: 0 !important; }
+
+  .no-results { text-align: center; padding: 60px 20px; color: var(--text3); }
+  .no-results h3 { font-size: 16px; color: var(--text2); margin-bottom: 8px; }
+
+  @media (max-width: 700px) {
+    header, main { padding: 12px 16px; }
+    .cmd-grid { grid-template-columns: 1fr; }
+    .info-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div>
+      <h1>SDC Command Reference</h1>
+      <div class="subtitle">Synopsys Design Constraints — Senior STA Engineer Reference</div>
+    </div>
+    <div class="search-box">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4"/><path d="M11 11l2.5 2.5"/></svg>
+      <input id="search" type="text" placeholder="Search commands, flags, keywords…" autocomplete="off">
+    </div>
+  </div>
+  <div class="filters" id="filters">
+    <button class="filter-btn active" data-cat="all">All</button>
+    <button class="filter-btn" data-cat="clock">🕐 Clock</button>
+    <button class="filter-btn" data-cat="io">↔ I/O Delay</button>
+    <button class="filter-btn" data-cat="exception">⚡ Exceptions</button>
+    <button class="filter-btn" data-cat="env">🌡 Environment</button>
+    <button class="filter-btn" data-cat="drc">📐 Design Rules</button>
+    <button class="filter-btn" data-cat="port">🔌 Port/Cell</button>
+    <button class="filter-btn" data-cat="path">🗂 Path Groups</button>
+    <button class="filter-btn" data-cat="query">🔍 Object Query</button>
+    <button class="filter-btn" data-cat="misc">⚙ Misc/Control</button>
+  </div>
+  <div class="stats">Showing <b id="visible-count">55</b> of <b>55</b> commands</div>
+</header>
+
+<main id="main">
+
+<!-- ═══════════════════════ SECTION: CLOCK ═══════════════════════ -->
+<div class="section-header cat-clock" id="sec-clock">
+  <h2 style="color:var(--blue)">Clock Definition &amp; Control</h2>
+  <span class="section-count" style="background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--blue)">8 commands</span>
+</div>
+<div class="cmd-grid">
+
+<!-- create_clock -->
+<div class="cmd-card cat-clock" data-cat="clock" data-keywords="create_clock period waveform port pin ideal primary master">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">create_clock</span>
+        <span class="cat-badge">Clock</span>
+      </div>
+      <div class="cmd-purpose">Define a primary (master) clock on a port or pin</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">create_clock</span> <span class="syntax-opt">[-name &lt;name&gt;]</span> <span class="syntax-opt">[-period &lt;period&gt;]</span> <span class="syntax-opt">[-waveform &lt;waveform_list&gt;]</span> <span class="syntax-opt">[-add]</span> <span class="syntax-opt">[-comment &lt;string&gt;]</span> <span class="syntax-var">[source_objects]</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Creates a timing clock object and anchors it to a port or pin. The STA tool derives all setup/hold checks from this clock's period and waveform.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">All paths clocked by this object are constrained with setup (max) and hold (min) checks. No clock = no timing check on that path.</div>
+      </div>
+    </div>
+    <table class="flags-table">
+      <tr><th>Flag</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="flag">-name</td><td>string</td><td class="fdesc">Logical clock name; defaults to source port/pin name. Use explicit names for clarity in reports.</td></tr>
+      <tr><td class="flag">-period</td><td>float (ns)</td><td class="fdesc">Full clock period. This is the setup window. Mandatory unless waveform fully implies it.</td></tr>
+      <tr><td class="flag">-waveform</td><td>list of floats</td><td class="fdesc">List of rising and falling edge times within one period. Default is {0 period/2}. E.g., {0 3 5 8} defines a non-50% duty cycle clock with 2 edges per half-period.</td></tr>
+      <tr><td class="flag">-add</td><td>flag</td><td class="fdesc">Append a second clock to the same source without overwriting the first. Used for paths with multiple clocking domains on one pin (rare, use carefully).</td></tr>
+      <tr><td class="flag">source_objects</td><td>collection</td><td class="fdesc">Port(s) or pin(s) where the clock originates. Use get_ports or get_pins.</td></tr>
+    </table>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># 1GHz clock, 50% duty cycle, on port CLK</span>
+<span class="ex-kw">create_clock</span> <span class="ex-flag">-name</span> <span class="ex-str">CLK_CORE</span> <span class="ex-flag">-period</span> <span class="ex-num">1.0</span> <span class="ex-flag">-waveform</span> {<span class="ex-num">0 0.5</span>} [<span class="ex-kw">get_ports</span> <span class="ex-str">CLK</span>]
+
+<span class="ex-comment"># 40% duty cycle, 500MHz clock</span>
+<span class="ex-kw">create_clock</span> <span class="ex-flag">-name</span> <span class="ex-str">CLK_DDR</span> <span class="ex-flag">-period</span> <span class="ex-num">2.0</span> <span class="ex-flag">-waveform</span> {<span class="ex-num">0 0.8</span>} [<span class="ex-kw">get_ports</span> <span class="ex-str">DDR_CLK</span>]</div>
+    </div>
+    <div class="warning-box"><b>⚠ Senior Note:</b> An ideal clock has zero latency and zero uncertainty by default. Always add set_clock_latency and set_clock_uncertainty after create_clock for realistic pre-CTS analysis. Missing these makes sign-off optimistic.</div>
+  </div>
+</div>
+
+<!-- create_generated_clock -->
+<div class="cmd-card cat-clock" data-cat="clock" data-keywords="create_generated_clock divide multiply source pll mux gated divided">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">create_generated_clock</span>
+        <span class="cat-badge">Clock</span>
+      </div>
+      <div class="cmd-purpose">Define a clock derived from another clock (PLL output, clock divider, mux output)</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">create_generated_clock</span> <span class="syntax-opt">[-name &lt;name&gt;]</span> <span class="syntax-opt">-source &lt;master_pin&gt;</span> <span class="syntax-opt">[-master_clock &lt;name&gt;]</span> <span class="syntax-opt">[-divide_by &lt;int&gt;]</span> <span class="syntax-opt">[-multiply_by &lt;int&gt;]</span> <span class="syntax-opt">[-duty_cycle &lt;pct&gt;]</span> <span class="syntax-opt">[-invert]</span> <span class="syntax-opt">[-edges &lt;list&gt;]</span> <span class="syntax-opt">[-edge_shift &lt;list&gt;]</span> <span class="syntax-opt">[-combinational]</span> <span class="syntax-opt">[-add]</span> <span class="syntax-opt">[-preinvert]</span> <span class="syntax-var">[source_objects]</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Declares a clock that is topologically derived from a master clock. The relationship preserves phase/frequency information for inter-domain timing checks.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">The tool can analyze synchronous relationships between master and generated clocks. Without this, crossing paths become asynchronous (unconstrained or false-pathed).</div>
+      </div>
+    </div>
+    <table class="flags-table">
+      <tr><th>Flag</th><th>Type</th><th>Description</th></tr>
+      <tr><td class="flag">-source</td><td>pin</td><td class="fdesc">Pin from which this clock is derived (e.g., PLL input, clock divider input). This is the clock source point — required.</td></tr>
+      <tr><td class="flag">-master_clock</td><td>clock name</td><td class="fdesc">Explicitly specify master clock at the source pin when multiple clocks exist there.</td></tr>
+      <tr><td class="flag">-divide_by</td><td>integer</td><td class="fdesc">Generated clock period = master_period × divide_by. E.g., -divide_by 2 halves the frequency.</td></tr>
+      <tr><td class="flag">-multiply_by</td><td>integer</td><td class="fdesc">Generated clock period = master_period / multiply_by. Used for PLL output that multiplies frequency.</td></tr>
+      <tr><td class="flag">-duty_cycle</td><td>float %</td><td class="fdesc">Override the duty cycle of the generated clock (0–100). Useful for non-symmetric dividers.</td></tr>
+      <tr><td class="flag">-invert</td><td>flag</td><td class="fdesc">Generated clock is phase-inverted relative to master. Used for falling-edge triggered domains.</td></tr>
+      <tr><td class="flag">-edges</td><td>list</td><td class="fdesc">Explicit edge mapping from master to generated. E.g., {1 3 5} means rising edge of generated comes from master edge 1, falling from edge 3, next rising from edge 5.</td></tr>
+      <tr><td class="flag">-edge_shift</td><td>list (ns)</td><td class="fdesc">Time shift applied to each edge in -edges list. Handles PLL phase offset.</td></tr>
+      <tr><td class="flag">-combinational</td><td>flag</td><td class="fdesc">The path from source to this clock is purely combinational (no flip-flop). Used for mux-selected clocks.</td></tr>
+    </table>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># PLL output: 4x multiplied clock</span>
+<span class="ex-kw">create_generated_clock</span> <span class="ex-flag">-name</span> <span class="ex-str">CLK_PLL_OUT</span> <span class="ex-flag">-source</span> [<span class="ex-kw">get_pins</span> <span class="ex-str">PLL/CLKIN</span>] <span class="ex-flag">-multiply_by</span> <span class="ex-num">4</span> [<span class="ex-kw">get_pins</span> <span class="ex-str">PLL/CLKOUT</span>]
+
+<span class="ex-comment"># Clock divider: div-by-2</span>
+<span class="ex-kw">create_generated_clock</span> <span class="ex-flag">-name</span> <span class="ex-str">CLK_DIV2</span> <span class="ex-flag">-source</span> [<span class="ex-kw">get_ports</span> <span class="ex-str">CLK</span>] <span class="ex-flag">-divide_by</span> <span class="ex-num">2</span> [<span class="ex-kw">get_pins</span> <span class="ex-str">U_DIV/Q</span>]
+
+<span class="ex-comment"># Clock mux output (combinational path)</span>
+<span class="ex-kw">create_generated_clock</span> <span class="ex-flag">-name</span> <span class="ex-str">CLK_MUX_OUT</span> <span class="ex-flag">-source</span> [<span class="ex-kw">get_pins</span> <span class="ex-str">CLK_MUX/I0</span>] <span class="ex-flag">-combinational</span> [<span class="ex-kw">get_pins</span> <span class="ex-str">CLK_MUX/Y</span>]</div>
+    </div>
+    <div class="warning-box"><b>⚠ Senior Note:</b> Forgetting -master_clock when multiple clocks share a source pin causes the tool to pick arbitrarily. Generated clocks must be re-propagated with set_propagated_clock post-CTS, or they remain ideal.</div>
+  </div>
+</div>
+
+<!-- set_clock_groups -->
+<div class="cmd-card cat-clock" data-cat="clock" data-keywords="set_clock_groups asynchronous logically_exclusive physically_exclusive domain crossing cdc">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_clock_groups</span>
+        <span class="cat-badge">Clock</span>
+      </div>
+      <div class="cmd-purpose">Define timing relationships between clock domains (CDC handling)</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_clock_groups</span> <span class="syntax-opt">[-name &lt;name&gt;]</span> <span class="syntax-opt">[-asynchronous | -logically_exclusive | -physically_exclusive]</span> <span class="syntax-opt">[-allow_paths]</span> <span class="syntax-opt">-group &lt;clocks&gt;</span> <span class="syntax-opt">-group &lt;clocks&gt;</span> …</div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Tells the timing tool how to treat paths between clock groups. Equivalent to set_false_path -from clk1 -to clk2 for asynchronous domains, but more semantically correct and manageable at scale.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">Paths between specified groups are either ignored (async/exclusive) or kept for analysis. Prevents false violations on legitimate CDC paths. With -allow_paths, violations are reported but excluded from critical paths.</div>
+      </div>
+    </div>
+    <table class="flags-table">
+      <tr><th>Flag</th><th>Description</th></tr>
+      <tr><td class="flag">-asynchronous</td><td class="fdesc">Clocks have no phase relationship. Paths between groups are NOT timed. Most common for CDC. Equivalent to bidirectional false paths.</td></tr>
+      <tr><td class="flag">-logically_exclusive</td><td class="fdesc">Clocks cannot be active simultaneously (e.g., mux-selected clocks). Paths not timed, but clock tree buffers are shared in synthesis.</td></tr>
+      <tr><td class="flag">-physically_exclusive</td><td class="fdesc">Clocks cannot even physically coexist. No shared buffers. Stronger than logically_exclusive.</td></tr>
+      <tr><td class="flag">-allow_paths</td><td class="fdesc">Still analyze and report paths but do not count them toward critical paths in optimization.</td></tr>
+      <tr><td class="flag">-group {clocks}</td><td class="fdesc">Repeatable. Each -group specifies a set of clocks forming one domain. Can pass multiple clocks per group.</td></tr>
+    </table>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># Fully asynchronous domains — no CDC timing analysis</span>
+<span class="ex-kw">set_clock_groups</span> <span class="ex-flag">-asynchronous</span> <span class="ex-flag">-group</span> [<span class="ex-kw">get_clocks</span> <span class="ex-str">CLK_SYS</span>] <span class="ex-flag">-group</span> [<span class="ex-kw">get_clocks</span> <span class="ex-str">CLK_USB</span>]
+
+<span class="ex-comment"># Mux-selected clocks (logically exclusive)</span>
+<span class="ex-kw">set_clock_groups</span> <span class="ex-flag">-logically_exclusive</span> <span class="ex-flag">-group</span> [<span class="ex-kw">get_clocks</span> <span class="ex-str">CLK_FAST</span>] <span class="ex-flag">-group</span> [<span class="ex-kw">get_clocks</span> <span class="ex-str">CLK_SLOW</span>]</div>
+    </div>
+    <div class="note-box">💡 In Synopsys PrimeTime, -asynchronous is the most frequently used option. Use -name so you can identify and delete individual groups later with remove_clock_groups.</div>
+  </div>
+</div>
+
+<!-- set_clock_latency -->
+<div class="cmd-card cat-clock" data-cat="clock" data-keywords="set_clock_latency source network insertion delay pre-CTS">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_clock_latency</span>
+        <span class="cat-badge">Clock</span>
+      </div>
+      <div class="cmd-purpose">Specify source or network latency for a clock (used pre-CTS)</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_clock_latency</span> <span class="syntax-opt">[-rise | -fall]</span> <span class="syntax-opt">[-min | -max]</span> <span class="syntax-opt">[-source]</span> <span class="syntax-opt">[-early | -late]</span> <span class="syntax-opt">[-clock &lt;clock_name&gt;]</span> <span class="syntax-val">latency_value</span> <span class="syntax-var">object_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Models the delay from clock source (e.g., off-chip oscillator) to the clock definition point (-source latency) and from the clock definition point to the flip-flop clock pin (network latency). Essential for accurate pre-CTS timing.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">Source latency shifts the clock waveform at the definition point. Network latency shifts the clock arrival at register CPs. Both affect setup and hold checks. After CTS, network latency is replaced by propagated delays.</div>
+      </div>
+    </div>
+    <table class="flags-table">
+      <tr><th>Flag</th><th>Description</th></tr>
+      <tr><td class="flag">-source</td><td class="fdesc">Specifies source latency (board trace, PCB, off-chip delay from oscillator to the ASIC input pin). If omitted, applies network latency (intra-chip clock tree).</td></tr>
+      <tr><td class="flag">-rise/-fall</td><td class="fdesc">Apply latency only to rising or falling edge of the clock, respectively.</td></tr>
+      <tr><td class="flag">-min/-max</td><td class="fdesc">Apply to min (hold) or max (setup) analysis corners. Skipping applies to both.</td></tr>
+      <tr><td class="flag">-early/-late</td><td class="fdesc">Used in MMMC. Applies to early (hold) or late (setup) timing arc analysis.</td></tr>
+    </table>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># 0.5ns board delay before chip input, 0.8ns clock tree inside</span>
+<span class="ex-kw">set_clock_latency</span> <span class="ex-flag">-source</span> <span class="ex-num">0.5</span> [<span class="ex-kw">get_clocks</span> <span class="ex-str">CLK_SYS</span>]
+<span class="ex-kw">set_clock_latency</span> <span class="ex-num">0.8</span> [<span class="ex-kw">get_clocks</span> <span class="ex-str">CLK_SYS</span>]
+
+<span class="ex-comment"># Min/Max latency for hold/setup separately</span>
+<span class="ex-kw">set_clock_latency</span> <span class="ex-flag">-source</span> <span class="ex-flag">-min</span> <span class="ex-num">0.3</span> [<span class="ex-kw">get_clocks</span> <span class="ex-str">CLK_SYS</span>]
+<span class="ex-kw">set_clock_latency</span> <span class="ex-flag">-source</span> <span class="ex-flag">-max</span> <span class="ex-num">0.7</span> [<span class="ex-kw">get_clocks</span> <span class="ex-str">CLK_SYS</span>]</div>
+    </div>
+    <div class="warning-box"><b>⚠ Senior Note:</b> After CTS, replace set_clock_latency (network) with set_propagated_clock to use actual routed delays. Source latency should remain if the board delay model is needed.</div>
+  </div>
+</div>
+
+<!-- set_clock_uncertainty -->
+<div class="cmd-card cat-clock" data-cat="clock" data-keywords="set_clock_uncertainty jitter skew margin setup hold OCV">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_clock_uncertainty</span>
+        <span class="cat-badge">Clock</span>
+      </div>
+      <div class="cmd-purpose">Model clock jitter, skew, and timing margin uncertainty</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_clock_uncertainty</span> <span class="syntax-opt">[-rise | -fall]</span> <span class="syntax-opt">[-setup | -hold]</span> <span class="syntax-opt">[-from &lt;clock&gt; [-rise_from|-fall_from]]</span> <span class="syntax-opt">[-to &lt;clock&gt; [-rise_to|-fall_to]]</span> <span class="syntax-val">uncertainty_value</span> <span class="syntax-opt">[object_list]</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Accounts for clock uncertainty: PLL jitter, on-chip variation in clock tree, measurement inaccuracy. Applied as a timing margin on top of computed skew. The tool subtracts uncertainty from setup slack and adds it to hold slack.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">Setup uncertainty tightens available time window. Hold uncertainty makes hold check harder to satisfy. For inter-clock paths, the -from/-to version allows different uncertainty per crossing direction.</div>
+      </div>
+    </div>
+    <table class="flags-table">
+      <tr><th>Flag</th><th>Description</th></tr>
+      <tr><td class="flag">-setup</td><td class="fdesc">Apply uncertainty only to setup (max delay) check. Typical: 100–300ps for PLL jitter + OCV margin.</td></tr>
+      <tr><td class="flag">-hold</td><td class="fdesc">Apply uncertainty only to hold (min delay) check.</td></tr>
+      <tr><td class="flag">-from/-to</td><td class="fdesc">Specify inter-clock uncertainty. Must be used together. Used for clock domain crossing setup/hold uncertainty.</td></tr>
+      <tr><td class="flag">-rise_from/-fall_to etc.</td><td class="fdesc">Edge-specific crossing uncertainty for fine-grained CDC modeling.</td></tr>
+    </table>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># 200ps setup uncertainty, 100ps hold uncertainty on CLK_SYS</span>
+<span class="ex-kw">set_clock_uncertainty</span> <span class="ex-flag">-setup</span> <span class="ex-num">0.2</span> [<span class="ex-kw">get_clocks</span> <span class="ex-str">CLK_SYS</span>]
+<span class="ex-kw">set_clock_uncertainty</span> <span class="ex-flag">-hold</span>  <span class="ex-num">0.1</span> [<span class="ex-kw">get_clocks</span> <span class="ex-str">CLK_SYS</span>]
+
+<span class="ex-comment"># Inter-clock uncertainty for CDC path</span>
+<span class="ex-kw">set_clock_uncertainty</span> <span class="ex-flag">-from</span> [<span class="ex-kw">get_clocks</span> <span class="ex-str">CLK_A</span>] <span class="ex-flag">-to</span> [<span class="ex-kw">get_clocks</span> <span class="ex-str">CLK_B</span>] <span class="ex-num">0.4</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- set_clock_transition -->
+<div class="cmd-card cat-clock" data-cat="clock" data-keywords="set_clock_transition slew rise fall transition ideal clock">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_clock_transition</span>
+        <span class="cat-badge">Clock</span>
+      </div>
+      <div class="cmd-purpose">Set rise/fall transition time on clock ports/pins for ideal clocks</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_clock_transition</span> <span class="syntax-opt">[-rise | -fall]</span> <span class="syntax-opt">[-min | -max]</span> <span class="syntax-opt">[-clock &lt;clock&gt;]</span> <span class="syntax-val">transition_value</span> <span class="syntax-var">clock_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Defines how fast the clock edge transitions (slew rate). Affects cell timing since most LUT/cell delays are functions of input slew. Used pre-CTS when real slew from clock tree buffers is unknown.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">The tool uses this value when looking up clock pin timing tables. A slow clock transition increases cell delay and D-to-Q delay. Overrides propagated slew for ideal networks.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># Set 150ps rise/fall transition on all clocks (pre-CTS estimation)</span>
+<span class="ex-kw">set_clock_transition</span> <span class="ex-num">0.15</span> [<span class="ex-kw">all_clocks</span>]
+<span class="ex-kw">set_clock_transition</span> <span class="ex-flag">-rise</span> <span class="ex-num">0.12</span> <span class="ex-flag">-fall</span> <span class="ex-num">0.18</span> [<span class="ex-kw">get_clocks</span> <span class="ex-str">CLK_DDR</span>]</div>
+    </div>
+    <div class="warning-box"><b>⚠ Senior Note:</b> After CTS with set_propagated_clock, set_clock_transition is overridden by propagated values. Keep it for pre-CTS only. Overly optimistic slew gives unconservative timing estimates.</div>
+  </div>
+</div>
+
+<!-- set_propagated_clock -->
+<div class="cmd-card cat-clock" data-cat="clock" data-keywords="set_propagated_clock propagated actual clock tree CTS post-CTS">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_propagated_clock</span>
+        <span class="cat-badge">Clock</span>
+      </div>
+      <div class="cmd-purpose">Switch from ideal to propagated (actual) clock network delays</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_propagated_clock</span> <span class="syntax-var">object_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Instructs the STA tool to compute actual clock arrival times by propagating through the physical clock tree network (buffers, wires) rather than using ideal lumped latency values.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">Clock skew is now computed from actual network delays. This is the correct mode for post-CTS sign-off. It overrides set_clock_latency (network) but NOT source latency.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># Enable propagated clocks for all clocks — standard post-CTS SDC</span>
+<span class="ex-kw">set_propagated_clock</span> [<span class="ex-kw">all_clocks</span>]
+
+<span class="ex-comment"># Selective propagation for a specific clock</span>
+<span class="ex-kw">set_propagated_clock</span> [<span class="ex-kw">get_clocks</span> <span class="ex-str">CLK_CORE</span>]</div>
+    </div>
+    <div class="note-box">💡 Use all_clocks to apply to every clock in one line. In a multi-mode setup, apply per-scenario. Ideal clocks after CTS will have over-optimistic slack because skew is hidden.</div>
+  </div>
+</div>
+
+<!-- set_clock_sense -->
+<div class="cmd-card cat-clock" data-cat="clock" data-keywords="set_clock_sense positive negative stop_propagation non-inverted gated latch">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_clock_sense</span>
+        <span class="cat-badge">Clock</span>
+      </div>
+      <div class="cmd-purpose">Override clock propagation sense at a specific pin (Synopsys/Cadence specific)</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_clock_sense</span> <span class="syntax-opt">[-positive | -negative | -stop_propagation]</span> <span class="syntax-opt">[-clock &lt;clock&gt;]</span> <span class="syntax-opt">[-pulse rising_or_falling]</span> <span class="syntax-var">pin_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Tells the tool whether a given pin sees a non-inverted (+), inverted (-), or no clock propagation through it. Used to handle complex clock gating cells where automatic sense inference fails.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">-stop_propagation terminates clock propagation at that pin — downstream is not clocked by this clock. -negative tells the tool this pin sees an inverted clock. Incorrect sense can cause wrong setup/hold checks.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># Stop CLK from propagating through a test mux output</span>
+<span class="ex-kw">set_clock_sense</span> <span class="ex-flag">-stop_propagation</span> <span class="ex-flag">-clock</span> CLK_SYS [<span class="ex-kw">get_pins</span> <span class="ex-str">TEST_MUX/Y</span>]
+
+<span class="ex-comment"># Force negative sense (inverted clock domain)</span>
+<span class="ex-kw">set_clock_sense</span> <span class="ex-flag">-negative</span> <span class="ex-flag">-clock</span> CLK_SYS [<span class="ex-kw">get_pins</span> <span class="ex-str">INV_CLK_BUF/Y</span>]</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end clock grid -->
+
+<!-- ═══════════════════════ SECTION: I/O DELAY ═══════════════════════ -->
+<div class="section-header cat-io" id="sec-io">
+  <h2 style="color:var(--green)">Input / Output Delay Constraints</h2>
+  <span class="section-count" style="background:var(--green-bg);border:1px solid var(--green-border);color:var(--green)">2 commands</span>
+</div>
+<div class="cmd-grid">
+
+<!-- set_input_delay -->
+<div class="cmd-card cat-io" data-cat="io" data-keywords="set_input_delay max min external delay input port arrival">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_input_delay</span>
+        <span class="cat-badge">I/O</span>
+      </div>
+      <div class="cmd-purpose">Model external combinational delay arriving at an input port relative to a clock</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_input_delay</span> <span class="syntax-opt">[-max | -min]</span> <span class="syntax-opt">-clock &lt;clock_name&gt;</span> <span class="syntax-opt">[-clock_fall]</span> <span class="syntax-opt">[-rise | -fall]</span> <span class="syntax-opt">[-add_delay]</span> <span class="syntax-opt">[-network_latency_included]</span> <span class="syntax-opt">[-source_latency_included]</span> <span class="syntax-val">delay_value</span> <span class="syntax-var">port_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Tells the STA tool how much time has already been consumed by the external source driving this input pin. The remaining time in the clock cycle is available for the internal logic.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">Available time = period - setup_time - input_delay (for max). A larger input_delay = less internal slack. The -max variant constrains setup; -min constrains hold.</div>
+      </div>
+    </div>
+    <table class="flags-table">
+      <tr><th>Flag</th><th>Description</th></tr>
+      <tr><td class="flag">-max</td><td class="fdesc">Maximum external delay. Used for setup analysis. Models worst-case arrival from external chip.</td></tr>
+      <tr><td class="flag">-min</td><td class="fdesc">Minimum external delay. Used for hold analysis. Models best-case (fastest) arrival.</td></tr>
+      <tr><td class="flag">-clock</td><td class="fdesc">Reference clock for the delay. The delay is measured relative to this clock's active edge.</td></tr>
+      <tr><td class="flag">-clock_fall</td><td class="fdesc">The reference is the falling edge of the clock. Used for DDR interfaces where data is sampled on both edges.</td></tr>
+      <tr><td class="flag">-add_delay</td><td class="fdesc">Do not override existing delay — add another constraint. Used when the same port is driven by multiple paths with different clocks.</td></tr>
+      <tr><td class="flag">-network_latency_included</td><td class="fdesc">The delay value already includes clock network latency in the external chip. Avoids double-counting.</td></tr>
+    </table>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># 2ns external logic, 500ps hold path — input constrained to CLK</span>
+<span class="ex-kw">set_input_delay</span> <span class="ex-flag">-max</span> <span class="ex-num">2.0</span> <span class="ex-flag">-clock</span> CLK_SYS [<span class="ex-kw">get_ports</span> <span class="ex-str">DATA_IN*</span>]
+<span class="ex-kw">set_input_delay</span> <span class="ex-flag">-min</span> <span class="ex-num">0.5</span> <span class="ex-flag">-clock</span> CLK_SYS [<span class="ex-kw">get_ports</span> <span class="ex-str">DATA_IN*</span>]
+
+<span class="ex-comment"># DDR input: both edges</span>
+<span class="ex-kw">set_input_delay</span> <span class="ex-flag">-max</span> <span class="ex-num">1.0</span> <span class="ex-flag">-clock</span> CLK_DDR [<span class="ex-kw">get_ports</span> <span class="ex-str">DDR_DQ*</span>]
+<span class="ex-kw">set_input_delay</span> <span class="ex-flag">-max</span> <span class="ex-num">1.0</span> <span class="ex-flag">-clock</span> CLK_DDR <span class="ex-flag">-clock_fall</span> <span class="ex-flag">-add_delay</span> [<span class="ex-kw">get_ports</span> <span class="ex-str">DDR_DQ*</span>]</div>
+    </div>
+    <div class="warning-box"><b>⚠ Senior Note:</b> Missing -min input delays leaves hold paths at input ports unconstrained. Always pair -max and -min for complete coverage. Ports without input_delay are analyzed with zero delay — dangerously optimistic.</div>
+  </div>
+</div>
+
+<!-- set_output_delay -->
+<div class="cmd-card cat-io" data-cat="io" data-keywords="set_output_delay max min external output port required time setup hold">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_output_delay</span>
+        <span class="cat-badge">I/O</span>
+      </div>
+      <div class="cmd-purpose">Model external setup/hold requirement at an output port relative to a clock</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_output_delay</span> <span class="syntax-opt">[-max | -min]</span> <span class="syntax-opt">-clock &lt;clock_name&gt;</span> <span class="syntax-opt">[-clock_fall]</span> <span class="syntax-opt">[-rise | -fall]</span> <span class="syntax-opt">[-add_delay]</span> <span class="syntax-opt">[-network_latency_included]</span> <span class="syntax-opt">[-source_latency_included]</span> <span class="syntax-val">delay_value</span> <span class="syntax-var">port_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Specifies how much time the receiving chip (downstream) needs before the next clock edge. The output data must be stable this many ns before the downstream setup window. It's the downstream chip's setup requirement.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">Required arrival time = clock_period - output_delay (for max). The internal path to the output must complete within this window. A larger output_delay tightens internal logic. -min models downstream hold requirement.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># Downstream chip needs data 1.5ns before its clock edge</span>
+<span class="ex-kw">set_output_delay</span> <span class="ex-flag">-max</span> <span class="ex-num">1.5</span> <span class="ex-flag">-clock</span> CLK_SYS [<span class="ex-kw">get_ports</span> <span class="ex-str">DATA_OUT*</span>]
+<span class="ex-kw">set_output_delay</span> <span class="ex-flag">-min</span> <span class="ex-num">-0.2</span> <span class="ex-flag">-clock</span> CLK_SYS [<span class="ex-kw">get_ports</span> <span class="ex-str">DATA_OUT*</span>]
+
+<span class="ex-comment"># Negative min output_delay is valid — means data can arrive slightly after edge</span>
+<span class="ex-comment"># (downstream has hold slack to spare)</span></div>
+    </div>
+    <div class="note-box">💡 For I/O constraints: output_delay + internal_path_delay ≤ clock_period - setup_margin. The -min value can be negative if the downstream chip has a negative hold time requirement (typical in SDR SRAMs).</div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════ SECTION: EXCEPTIONS ═══════════════════════ -->
+<div class="section-header cat-exception" id="sec-exception">
+  <h2 style="color:var(--coral)">Timing Exceptions</h2>
+  <span class="section-count" style="background:var(--coral-bg);border:1px solid var(--coral-border);color:var(--coral)">5 commands</span>
+</div>
+<div class="cmd-grid">
+
+<!-- set_false_path -->
+<div class="cmd-card cat-exception" data-cat="exception" data-keywords="set_false_path false path exception async reset scan test CDC">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_false_path</span>
+        <span class="cat-badge">Exception</span>
+      </div>
+      <div class="cmd-purpose">Exclude a path from timing analysis — no setup or hold check required</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_false_path</span> <span class="syntax-opt">[-setup | -hold]</span> <span class="syntax-opt">[-rise | -fall]</span> <span class="syntax-opt">[-from &lt;objects&gt;]</span> <span class="syntax-opt">[-to &lt;objects&gt;]</span> <span class="syntax-opt">[-through &lt;objects&gt;]</span> <span class="syntax-opt">[-rise_from | -fall_from | -rise_to | -fall_to | -rise_through | -fall_through]</span> <span class="syntax-opt">[-comment &lt;string&gt;]</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Marks a timing path as non-functional or irrelevant for analysis. The path exists logically but never needs to meet timing because it's either asynchronous, a test path, a static config signal, or functionally impossible.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">The path is completely removed from setup/hold checks. No slack is computed, no violation is flagged. Overuse can hide real issues — always document with -comment.</div>
+      </div>
+    </div>
+    <table class="flags-table">
+      <tr><th>Flag</th><th>Description</th></tr>
+      <tr><td class="flag">-from</td><td class="fdesc">Start point of the false path — clock, register, port, or pin.</td></tr>
+      <tr><td class="flag">-to</td><td class="fdesc">End point of the false path.</td></tr>
+      <tr><td class="flag">-through</td><td class="fdesc">A waypoint — the path must pass through this pin or net. Used to narrow scope so only specific paths through a shared logic block are false.</td></tr>
+      <tr><td class="flag">-setup</td><td class="fdesc">Only exclude from setup (max delay) analysis. Hold still checked.</td></tr>
+      <tr><td class="flag">-hold</td><td class="fdesc">Only exclude from hold (min delay) analysis.</td></tr>
+      <tr><td class="flag">-rise / -fall</td><td class="fdesc">Only apply to rising or falling transitions on the path endpoint.</td></tr>
+    </table>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># Async CDC: no timing between clock domains</span>
+<span class="ex-kw">set_false_path</span> <span class="ex-flag">-from</span> [<span class="ex-kw">get_clocks</span> <span class="ex-str">CLK_A</span>] <span class="ex-flag">-to</span> [<span class="ex-kw">get_clocks</span> <span class="ex-str">CLK_B</span>]
+
+<span class="ex-comment"># Async reset pin (always arrives before design is active)</span>
+<span class="ex-kw">set_false_path</span> <span class="ex-flag">-from</span> [<span class="ex-kw">get_ports</span> <span class="ex-str">ASYNC_RST_N</span>]
+
+<span class="ex-comment"># Scan path — only false during scan mode (use case analysis too)</span>
+<span class="ex-kw">set_false_path</span> <span class="ex-flag">-through</span> [<span class="ex-kw">get_pins</span> <span class="ex-str">*/SE</span>]
+
+<span class="ex-comment"># False only for setup check on a specific crossing</span>
+<span class="ex-kw">set_false_path</span> <span class="ex-flag">-setup</span> <span class="ex-flag">-from</span> [<span class="ex-kw">get_registers</span> <span class="ex-str">CFG_REG*</span>] <span class="ex-flag">-to</span> [<span class="ex-kw">get_registers</span> <span class="ex-str">LOGIC_REG*</span>]</div>
+    </div>
+    <div class="warning-box"><b>⚠ Senior Note:</b> Over-applying set_false_path is a major sign-off risk. Use -through to scope it precisely. If you write -from clk1 -to clk2 without synchronizers, make sure those paths truly never carry timing-critical data. Always add -comment "Reason: …" for traceability.</div>
+  </div>
+</div>
+
+<!-- set_multicycle_path -->
+<div class="cmd-card cat-exception" data-cat="exception" data-keywords="set_multicycle_path multicycle setup hold multiplier slow path divider">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_multicycle_path</span>
+        <span class="cat-badge">Exception</span>
+      </div>
+      <div class="cmd-purpose">Allow a path more than one clock cycle to propagate (slow/pipelined paths)</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_multicycle_path</span> <span class="syntax-opt">[-setup | -hold]</span> <span class="syntax-opt">[-start | -end]</span> <span class="syntax-opt">[-from &lt;objects&gt;]</span> <span class="syntax-opt">[-to &lt;objects&gt;]</span> <span class="syntax-opt">[-through &lt;objects&gt;]</span> <span class="syntax-opt">[-rise_from | -fall_from | -rise_to | -fall_to]</span> <span class="syntax-val">path_multiplier</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Relaxes setup check by allowing N clock cycles for data to propagate. Used for slow datapaths (multipliers, large adders, non-critical config paths) that intentionally take more than one cycle.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">Setup window = N × period. But hold check also shifts — you MUST also add a corresponding -hold multicycle path to prevent the tool from checking hold against an earlier launch edge. Forgetting -hold MCP causes phantom hold violations.</div>
+      </div>
+    </div>
+    <table class="flags-table">
+      <tr><th>Flag</th><th>Description</th></tr>
+      <tr><td class="flag">path_multiplier</td><td class="fdesc">Integer. 2 = 2 cycles allowed, 3 = 3 cycles, etc. Applied to setup check by default.</td></tr>
+      <tr><td class="flag">-setup</td><td class="fdesc">Shift the capture edge forward by (N-1) clock cycles. Setup window becomes N×period.</td></tr>
+      <tr><td class="flag">-hold</td><td class="fdesc">Shift hold check reference. MUST pair with -setup MCP. For a 2-cycle MCP: set_multicycle_path -hold 1 to move hold check back to 1 cycle before the new capture edge.</td></tr>
+      <tr><td class="flag">-start</td><td class="fdesc">The multiplier is counted from the launch clock (source). Used when clocks differ and you want to move by launch cycles.</td></tr>
+      <tr><td class="flag">-end</td><td class="fdesc">The multiplier is counted from the capture clock (destination). Default for same-clock MCPs. Important for CDC paths.</td></tr>
+    </table>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># 32-bit multiplier takes 2 clock cycles — standard MCP pair</span>
+<span class="ex-kw">set_multicycle_path</span> <span class="ex-flag">-setup</span> <span class="ex-num">2</span> <span class="ex-flag">-from</span> [<span class="ex-kw">get_cells</span> <span class="ex-str">MULT_REG_IN*</span>] <span class="ex-flag">-to</span> [<span class="ex-kw">get_cells</span> <span class="ex-str">MULT_REG_OUT*</span>]
+<span class="ex-kw">set_multicycle_path</span> <span class="ex-flag">-hold</span>  <span class="ex-num">1</span> <span class="ex-flag">-from</span> [<span class="ex-kw">get_cells</span> <span class="ex-str">MULT_REG_IN*</span>] <span class="ex-flag">-to</span> [<span class="ex-kw">get_cells</span> <span class="ex-str">MULT_REG_OUT*</span>]
+
+<span class="ex-comment"># Config register read — 4 cycles allowed</span>
+<span class="ex-kw">set_multicycle_path</span> <span class="ex-flag">-setup</span> <span class="ex-num">4</span> <span class="ex-flag">-from</span> [<span class="ex-kw">get_registers</span> <span class="ex-str">CFG_*</span>]
+<span class="ex-kw">set_multicycle_path</span> <span class="ex-flag">-hold</span>  <span class="ex-num">3</span> <span class="ex-flag">-from</span> [<span class="ex-kw">get_registers</span> <span class="ex-str">CFG_*</span>]</div>
+    </div>
+    <div class="warning-box"><b>⚠ Senior Note:</b> The -hold MCP value = (setup_multiplier - 1) for same-domain same-frequency paths. For cross-domain paths with -start/-end, the math changes — draw a waveform diagram before applying. A wrong -hold value is a real hold violation risk in silicon.</div>
+  </div>
+</div>
+
+<!-- set_max_delay -->
+<div class="cmd-card cat-exception" data-cat="exception" data-keywords="set_max_delay max delay override path constraint datapath only">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_max_delay</span>
+        <span class="cat-badge">Exception</span>
+      </div>
+      <div class="cmd-purpose">Override maximum (setup) delay requirement on a specific path</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_max_delay</span> <span class="syntax-opt">[-datapath_only]</span> <span class="syntax-opt">[-from &lt;objects&gt;]</span> <span class="syntax-opt">[-to &lt;objects&gt;]</span> <span class="syntax-opt">[-through &lt;objects&gt;]</span> <span class="syntax-opt">[-rise | -fall]</span> <span class="syntax-opt">[-ignore_clock_latency]</span> <span class="syntax-val">delay_value</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Sets an explicit maximum path delay constraint that overrides the clock-derived requirement. Used for paths that cross asynchronous domains but still need a bounded delay (e.g., synchronizer input must settle within N ns).</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">The required arrival time at the endpoint is set to delay_value. Without -datapath_only, clock uncertainty and skew are still applied. With -datapath_only, it's a pure combinational delay constraint — no clock effects considered.</td></div>
+      </div>
+    </div>
+    <table class="flags-table">
+      <tr><th>Flag</th><th>Description</th></tr>
+      <tr><td class="flag">-datapath_only</td><td class="fdesc">Ignore all clock effects (latency, uncertainty, skew). The constraint is purely: actual_path_delay ≤ value. Used for CDC synchronizer constraints. Note: -datapath_only disables hold check on that path.</td></tr>
+      <tr><td class="flag">-ignore_clock_latency</td><td class="fdesc">Exclude clock latency from the timing calculation but keep uncertainty effects. Less strict than -datapath_only.</td></tr>
+    </table>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># Path must complete within 3.5ns regardless of clock</span>
+<span class="ex-kw">set_max_delay</span> <span class="ex-num">3.5</span> <span class="ex-flag">-from</span> [<span class="ex-kw">get_cells</span> <span class="ex-str">SYNC_FF1/Q</span>] <span class="ex-flag">-to</span> [<span class="ex-kw">get_cells</span> <span class="ex-str">SYNC_FF2/D</span>]
+
+<span class="ex-comment"># Pure datapath CDC: settle within 4ns (pure combinational limit)</span>
+<span class="ex-kw">set_max_delay</span> <span class="ex-flag">-datapath_only</span> <span class="ex-num">4.0</span> <span class="ex-flag">-from</span> [<span class="ex-kw">get_clocks</span> <span class="ex-str">CLK_A</span>] <span class="ex-flag">-to</span> [<span class="ex-kw">get_pins</span> <span class="ex-str">U_SYNC/D</span>]</div>
+    </div>
+    <div class="warning-box"><b>⚠ Senior Note:</b> -datapath_only suppresses hold checks. If you use it for a CDC path, ensure you have a separate set_min_delay or the synchronizer is robust. In Synopsys PrimeTime, -datapath_only is the preferred way to model metastability windows on CDC paths.</div>
+  </div>
+</div>
+
+<!-- set_min_delay -->
+<div class="cmd-card cat-exception" data-cat="exception" data-keywords="set_min_delay min delay hold override path">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_min_delay</span>
+        <span class="cat-badge">Exception</span>
+      </div>
+      <div class="cmd-purpose">Override minimum (hold) delay requirement on a specific path</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_min_delay</span> <span class="syntax-opt">[-from &lt;objects&gt;]</span> <span class="syntax-opt">[-to &lt;objects&gt;]</span> <span class="syntax-opt">[-through &lt;objects&gt;]</span> <span class="syntax-opt">[-rise | -fall]</span> <span class="syntax-val">delay_value</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Sets a minimum delay requirement (hold constraint) on a path that overrides the clock-derived hold check. The actual path delay must be at least delay_value ns.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">Useful for paths where you need to ensure a minimum propagation delay (e.g., for signal integrity, synchronizer metastability window, or to model minimum hold at destination). Less commonly used than set_max_delay.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># Ensure at least 0.5ns minimum hold on output port</span>
+<span class="ex-kw">set_min_delay</span> <span class="ex-num">0.5</span> <span class="ex-flag">-to</span> [<span class="ex-kw">get_ports</span> <span class="ex-str">DATA_OUT</span>]</div>
+    </div>
+  </div>
+</div>
+
+<!-- set_disable_timing -->
+<div class="cmd-card cat-exception" data-cat="exception" data-keywords="set_disable_timing arc disable cell pin combinational loop">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_disable_timing</span>
+        <span class="cat-badge">Exception</span>
+      </div>
+      <div class="cmd-purpose">Disable a specific timing arc within a cell or between pins</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_disable_timing</span> <span class="syntax-opt">[-from &lt;pin_name&gt;]</span> <span class="syntax-opt">[-to &lt;pin_name&gt;]</span> <span class="syntax-var">cell_or_net_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Removes a specific timing arc from a cell's timing model for analysis. Used when a particular input-to-output arc in a cell is not functionally active (e.g., a latch enable arc when latch is always transparent, or a mux select arc).</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">The arc is completely invisible to the STA engine. No delay contribution from that arc. More surgical than set_false_path — affects the cell model, not just a path.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># Disable the enable-to-output arc of a clock gate (when not gating)</span>
+<span class="ex-kw">set_disable_timing</span> <span class="ex-flag">-from</span> EN <span class="ex-flag">-to</span> ENCLK [<span class="ex-kw">get_cells</span> <span class="ex-str">CG_CELL*</span>]
+
+<span class="ex-comment"># Disable a feedback arc to break a combinational loop</span>
+<span class="ex-kw">set_disable_timing</span> <span class="ex-flag">-from</span> Q <span class="ex-flag">-to</span> D [<span class="ex-kw">get_cells</span> <span class="ex-str">LATCH_INST</span>]</div>
+    </div>
+    <div class="warning-box"><b>⚠ Senior Note:</b> Be careful disabling arcs in latch-based designs — you might disable a real timing path. This should be used only when the arc is provably non-functional by design. Document every use.</div>
+  </div>
+</div>
+</div><!-- end exception grid -->
+
+<!-- ═══════════════════════ SECTION: ENVIRONMENT ═══════════════════════ -->
+<div class="section-header cat-env" id="sec-env">
+  <h2 style="color:var(--amber)">Environment &amp; Operating Conditions</h2>
+  <span class="section-count" style="background:var(--amber-bg);border:1px solid var(--amber-border);color:var(--amber)">4 commands</span>
+</div>
+<div class="cmd-grid">
+
+<!-- set_operating_conditions -->
+<div class="cmd-card cat-env" data-cat="env" data-keywords="set_operating_conditions pvt process voltage temperature corner slow fast typ">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_operating_conditions</span>
+        <span class="cat-badge">Environment</span>
+      </div>
+      <div class="cmd-purpose">Set the PVT (process/voltage/temperature) corner for timing analysis</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_operating_conditions</span> <span class="syntax-opt">[-library &lt;lib_name&gt;]</span> <span class="syntax-opt">[-min &lt;condition&gt;]</span> <span class="syntax-opt">[-max &lt;condition&gt;]</span> <span class="syntax-opt">[-min_library &lt;lib&gt;]</span> <span class="syntax-opt">[-max_library &lt;lib&gt;]</span> <span class="syntax-opt">[-analysis_type on_chip_variation | bc_wc | single]</span> <span class="syntax-opt">[condition_name]</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Selects the PVT operating condition from the Liberty library (.lib) to use for cell delay calculations. Each operating condition specifies process corner, supply voltage, and temperature — which affects delay values.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">All cell and wire delays are scaled according to the selected condition. "slow" corners increase delays (pessimistic setup). "fast" corners reduce delays (pessimistic hold). -analysis_type on_chip_variation enables OCV derating.</div>
+      </div>
+    </div>
+    <table class="flags-table">
+      <tr><th>Flag</th><th>Description</th></tr>
+      <tr><td class="flag">-min</td><td class="fdesc">Operating condition for hold (min delay) analysis — usually the fastest corner (bc = best case).</td></tr>
+      <tr><td class="flag">-max</td><td class="fdesc">Operating condition for setup (max delay) analysis — usually the slowest corner (wc = worst case).</td></tr>
+      <tr><td class="flag">-analysis_type on_chip_variation</td><td class="fdesc">Enables OCV mode where launch and capture paths can be analyzed at different PVT points.</td></tr>
+      <tr><td class="flag">-analysis_type bc_wc</td><td class="fdesc">Best-case/worst-case: min analysis uses bc library, max analysis uses wc library. Traditional approach.</td></tr>
+    </table>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># Typical corner</span>
+<span class="ex-kw">set_operating_conditions</span> <span class="ex-str">tt_0p8v_25c</span>
+
+<span class="ex-comment"># Worst-case setup, best-case hold (bc_wc mode)</span>
+<span class="ex-kw">set_operating_conditions</span> <span class="ex-flag">-max</span> <span class="ex-str">ss_0p72v_125c</span> <span class="ex-flag">-min</span> <span class="ex-str">ff_0p88v_m40c</span>
+
+<span class="ex-comment"># OCV analysis (single library, derates applied separately)</span>
+<span class="ex-kw">set_operating_conditions</span> <span class="ex-flag">-analysis_type</span> on_chip_variation <span class="ex-str">ss_0p72v_125c</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- set_wire_load_model -->
+<div class="cmd-card cat-env" data-cat="env" data-keywords="set_wire_load_model wire load resistance capacitance pre-layout">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_wire_load_model</span>
+        <span class="cat-badge">Environment</span>
+      </div>
+      <div class="cmd-purpose">Assign a statistical wire load model to estimate routing parasitics pre-layout</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_wire_load_model</span> <span class="syntax-opt">-name &lt;model_name&gt;</span> <span class="syntax-opt">[-library &lt;lib&gt;]</span> <span class="syntax-opt">[-min | -max]</span> <span class="syntax-opt">[object_list]</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Defines wire resistance and capacitance estimates for nets as a function of fanout. The model is statistical — defined in the .lib file for a given die area/process. Used exclusively pre-layout.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">Adds estimated RC wire delay to all nets. Without this, only cell delays exist — nets have zero delay, which is overly optimistic for pre-layout closure checks. Post-layout replaces this with actual SDF/SPEF parasitics.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># Apply 10K-gate area wire load model</span>
+<span class="ex-kw">set_wire_load_model</span> <span class="ex-flag">-name</span> <span class="ex-str">WireLoad_10K</span> <span class="ex-flag">-library</span> <span class="ex-str">my_process_lib</span>
+
+<span class="ex-comment"># Different models for setup and hold</span>
+<span class="ex-kw">set_wire_load_model</span> <span class="ex-flag">-name</span> <span class="ex-str">WireLoad_10K_wc</span> <span class="ex-flag">-max</span>
+<span class="ex-kw">set_wire_load_model</span> <span class="ex-flag">-name</span> <span class="ex-str">WireLoad_10K_bc</span> <span class="ex-flag">-min</span></div>
+    </div>
+    <div class="note-box">💡 Modern advanced node flows (7nm, 5nm) skip wire load models entirely — parasitic extraction from DEF is available early. Wire load models are primarily a 28nm and above technique.</note>
+  </div>
+</div>
+
+<!-- set_wire_load_mode -->
+<div class="cmd-card cat-env" data-cat="env" data-keywords="set_wire_load_mode top enclosed segmented hierarchy">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_wire_load_mode</span>
+        <span class="cat-badge">Environment</span>
+      </div>
+      <div class="cmd-purpose">Control how wire load models are applied across hierarchical boundaries</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_wire_load_mode</span> <span class="syntax-val">top | enclosed | segmented</span></div>
+    <table class="flags-table">
+      <tr><th>Mode</th><th>Description</th></tr>
+      <tr><td class="flag">top</td><td class="fdesc">All nets in all blocks use the top-level wire load model. Simple but overly pessimistic for sub-blocks.</td></tr>
+      <tr><td class="flag">enclosed</td><td class="fdesc">Each net uses the wire load model of its enclosing (lowest hierarchical) block. More accurate for hierarchical designs.</td></tr>
+      <tr><td class="flag">segmented</td><td class="fdesc">For nets crossing hierarchy, each segment uses the wire load model of the module it traverses. Most accurate.</td></tr>
+    </table>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-kw">set_wire_load_mode</span> enclosed   <span class="ex-comment"># Most common for hierarchical designs</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- set_wire_load_selection_group -->
+<div class="cmd-card cat-env" data-cat="env" data-keywords="set_wire_load_selection_group auto select fanout area">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_wire_load_selection_group</span>
+        <span class="cat-badge">Environment</span>
+      </div>
+      <div class="cmd-purpose">Automatically select wire load model based on fanout count</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_wire_load_selection_group</span> <span class="syntax-opt">[-library &lt;lib&gt;]</span> <span class="syntax-opt">[-min | -max]</span> <span class="syntax-var">group_name</span> <span class="syntax-opt">[object_list]</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Points to a wire_load_selection table in the Liberty library that maps net fanout ranges to specific wire load models. The tool picks the right model automatically per net.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">Nets with high fanout get larger wire load models; low-fanout nets get smaller ones. More accurate than a fixed single model.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end env grid -->
+
+<!-- ═══════════════════════ SECTION: DRC ═══════════════════════ -->
+<div class="section-header cat-drc" id="sec-drc">
+  <h2 style="color:var(--purple)">Design Rule Constraints</h2>
+  <span class="section-count" style="background:var(--purple-bg);border:1px solid var(--purple-border);color:var(--purple)">5 commands</span>
+</div>
+<div class="cmd-grid">
+
+<!-- set_max_transition -->
+<div class="cmd-card cat-drc" data-cat="drc" data-keywords="set_max_transition slew transition max timing DRC signal integrity">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_max_transition</span>
+        <span class="cat-badge">DRC</span>
+      </div>
+      <div class="cmd-purpose">Set maximum allowable slew (transition time) on nets or ports</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_max_transition</span> <span class="syntax-opt">[-clock_path | -data_path | -rise | -fall]</span> <span class="syntax-opt">[-cell_check]</span> <span class="syntax-val">transition_value</span> <span class="syntax-var">object_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Limits how slow a signal edge can be (rise/fall time). Slow transitions cause increased short-circuit power, degraded noise margins, increased delay, and can even cause logic errors in some cell types.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">The tool reports DRC violations when computed slew exceeds this value. In synthesis, it drives buffer insertion to fix slew degradation. This constraint does NOT change timing — it flags violations.</div>
+      </div>
+    </div>
+    <table class="flags-table">
+      <tr><th>Flag</th><th>Description</th></tr>
+      <tr><td class="flag">-clock_path</td><td class="fdesc">Apply only to clock paths. Typical: 150–200ps for clock, stricter than data.</td></tr>
+      <tr><td class="flag">-data_path</td><td class="fdesc">Apply only to data paths.</td></tr>
+      <tr><td class="flag">-cell_check</td><td class="fdesc">Check against cell-level slew limits from the Liberty library, not just the SDC value. Use both together for comprehensive checking.</td></tr>
+    </table>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># 200ps max slew on entire design</span>
+<span class="ex-kw">set_max_transition</span> <span class="ex-num">0.2</span> [<span class="ex-kw">current_design</span>]
+
+<span class="ex-comment"># Stricter 100ps on clock paths</span>
+<span class="ex-kw">set_max_transition</span> <span class="ex-flag">-clock_path</span> <span class="ex-num">0.1</span> [<span class="ex-kw">current_design</span>]</div>
+    </div>
+  </div>
+</div>
+
+<!-- set_max_fanout -->
+<div class="cmd-card cat-drc" data-cat="drc" data-keywords="set_max_fanout fanout DRC drive strength buffer">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_max_fanout</span>
+        <span class="cat-badge">DRC</span>
+      </div>
+      <div class="cmd-purpose">Limit the maximum fanout (load count) on a net or design</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_max_fanout</span> <span class="syntax-val">fanout_value</span> <span class="syntax-var">object_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Constrains how many cells can be driven by a single net. High fanout causes degraded slew (slower transitions), increased delay, and sensitivity to noise. The tool inserts buffers to satisfy this.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">A DRC violation is flagged when fanout exceeds the limit. Synthesis/optimization inserts buffers or resizes drivers to fix. The indirect effect is improved slew and delay on high-fanout nets.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-kw">set_max_fanout</span> <span class="ex-num">20</span> [<span class="ex-kw">current_design</span>]
+<span class="ex-kw">set_max_fanout</span> <span class="ex-num">8</span>  [<span class="ex-kw">get_ports</span> <span class="ex-str">CTRL_*</span>]   <span class="ex-comment"># Tighter on control signals</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- set_max_capacitance -->
+<div class="cmd-card cat-drc" data-cat="drc" data-keywords="set_max_capacitance capacitance load net DRC">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_max_capacitance</span>
+        <span class="cat-badge">DRC</span>
+      </div>
+      <div class="cmd-purpose">Limit maximum capacitive load on a net or port</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_max_capacitance</span> <span class="syntax-opt">[-clock_path | -data_path]</span> <span class="syntax-val">capacitance_value</span> <span class="syntax-var">object_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Restricts the total lumped capacitance (pF) on a net. High capacitance causes slow transitions, increased dynamic power, and delay. Often derived from the Liberty cell's max_capacitance attribute.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">Reports DRC violation when total net cap exceeds limit. Synthesis adds buffers or uses stronger drive cells to fix. Affects transition times and consequently cell delays.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># Max 100fF capacitance on all nets</span>
+<span class="ex-kw">set_max_capacitance</span> <span class="ex-num">0.1</span> [<span class="ex-kw">current_design</span>]
+<span class="ex-kw">set_max_capacitance</span> <span class="ex-flag">-clock_path</span> <span class="ex-num">0.05</span> [<span class="ex-kw">current_design</span>]</div>
+    </div>
+  </div>
+</div>
+
+<!-- set_min_capacitance -->
+<div class="cmd-card cat-drc" data-cat="drc" data-keywords="set_min_capacitance minimum capacitance load DRC">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_min_capacitance</span>
+        <span class="cat-badge">DRC</span>
+      </div>
+      <div class="cmd-purpose">Set minimum capacitive load requirement (ensures driver stability)</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_min_capacitance</span> <span class="syntax-val">capacitance_value</span> <span class="syntax-var">object_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Some drivers (particularly analog-influenced or mixed-signal) require a minimum load capacitance for stability (e.g., oscillator buffers, LDO outputs). This models that requirement.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">Rarely used in pure digital STA. The tool flags nets with total cap below the minimum. Synthesis may add dummy loads (tie cells) to meet this — use cautiously.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- set_max_area -->
+<div class="cmd-card cat-drc" data-cat="drc" data-keywords="set_max_area area constraint synthesis optimization">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_max_area</span>
+        <span class="cat-badge">DRC</span>
+      </div>
+      <div class="cmd-purpose">Constrain the maximum combinational area of the design</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_max_area</span> <span class="syntax-val">area_value</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Specifies the maximum total gate area (in library units, typically µm²) the synthesized design can occupy. Guides the synthesis tool to use smaller cells and minimize logic duplication.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">Primarily a synthesis constraint. In STA, it affects which cells are chosen during ECO. Setting to 0 means "minimize area as much as possible while meeting timing."</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-kw">set_max_area</span> <span class="ex-num">0</span>          <span class="ex-comment"># Minimize area (no hard limit)</span>
+<span class="ex-kw">set_max_area</span> <span class="ex-num">500000</span>    <span class="ex-comment"># Hard limit: 500,000 µm²</span></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end DRC grid -->
+
+<!-- ═══════════════════════ SECTION: PORT/CELL ═══════════════════════ -->
+<div class="section-header cat-port" id="sec-port">
+  <h2 style="color:var(--teal)">Port &amp; Cell Modeling</h2>
+  <span class="section-count" style="background:var(--teal-bg);border:1px solid var(--teal-border);color:var(--teal)">6 commands</span>
+</div>
+<div class="cmd-grid">
+
+<!-- set_load -->
+<div class="cmd-card cat-port" data-cat="port" data-keywords="set_load capacitance output port net drive strength model">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_load</span>
+        <span class="cat-badge">Port/Cell</span>
+      </div>
+      <div class="cmd-purpose">Assign a capacitive load value to output ports or nets</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_load</span> <span class="syntax-opt">[-min | -max]</span> <span class="syntax-opt">[-pin_load | -wire_load]</span> <span class="syntax-opt">[-subtract_pin_load]</span> <span class="syntax-val">capacitance_value</span> <span class="syntax-var">object_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Models the external capacitive load driven by an output port (PCB trace, next-stage input capacitance, ESD structure). Without this, output port has only internal cell capacitances — overly optimistic for output timing.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">Added load increases output transition time, which increases delay of the driving cell. This propagates backward and can tighten setup slack on the path leading to that output. Critical for I/O timing accuracy.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># 5pF board trace capacitance on all output ports</span>
+<span class="ex-kw">set_load</span> <span class="ex-num">5.0</span> [<span class="ex-kw">all_outputs</span>]
+
+<span class="ex-comment"># Different load for setup vs hold</span>
+<span class="ex-kw">set_load</span> <span class="ex-flag">-max</span> <span class="ex-num">6.0</span> [<span class="ex-kw">get_ports</span> <span class="ex-str">BUS_OUT*</span>]
+<span class="ex-kw">set_load</span> <span class="ex-flag">-min</span> <span class="ex-num">4.0</span> [<span class="ex-kw">get_ports</span> <span class="ex-str">BUS_OUT*</span>]</div>
+    </div>
+  </div>
+</div>
+
+<!-- set_drive -->
+<div class="cmd-card cat-port" data-cat="port" data-keywords="set_drive resistance input port drive strength external driver">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_drive</span>
+        <span class="cat-badge">Port/Cell</span>
+      </div>
+      <div class="cmd-purpose">Model external driver resistance at input ports</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_drive</span> <span class="syntax-opt">[-rise | -fall]</span> <span class="syntax-opt">[-min | -max]</span> <span class="syntax-val">drive_resistance</span> <span class="syntax-var">input_port_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Simulates the resistance of the external driver at an input port. A non-zero drive resistance creates an RC delay at the input, affecting the slew of the first cell in the path.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">The input port slew is derived from drive_resistance × input_pin_capacitance. This slew feeds into the first cell's delay lookup table. Preferred over set_drive: use set_driving_cell for more accuracy.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># 50 ohm source resistance (typical PCB)</span>
+<span class="ex-kw">set_drive</span> <span class="ex-num">50</span> [<span class="ex-kw">all_inputs</span>]
+<span class="ex-kw">set_drive</span> <span class="ex-num">0</span>  [<span class="ex-kw">all_clocks</span>]   <span class="ex-comment"># Ideal drive for clocks</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- set_driving_cell -->
+<div class="cmd-card cat-port" data-cat="port" data-keywords="set_driving_cell library cell input port drive model accurate slew">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_driving_cell</span>
+        <span class="cat-badge">Port/Cell</span>
+      </div>
+      <div class="cmd-purpose">Model external driver at input port using a real library cell (preferred over set_drive)</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_driving_cell</span> <span class="syntax-opt">-lib_cell &lt;cell_name&gt;</span> <span class="syntax-opt">[-library &lt;lib_name&gt;]</span> <span class="syntax-opt">[-pin &lt;pin_name&gt;]</span> <span class="syntax-opt">[-from_pin &lt;input_pin&gt;]</span> <span class="syntax-opt">[-rise | -fall]</span> <span class="syntax-opt">[-min | -max]</span> <span class="syntax-opt">[-no_design_rule]</span> <span class="syntax-opt">[-dont_scale]</span> <span class="syntax-opt">[-input_transition_rise &lt;t&gt;]</span> <span class="syntax-opt">[-input_transition_fall &lt;t&gt;]</span> <span class="syntax-var">input_port_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Specifies the exact library cell (e.g., BUFX8, INV4) that drives a given input port. The tool looks up this cell's drive strength from the Liberty model to compute accurate input slew, rather than using a simple resistive approximation.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">Most accurate method for modeling I/O port drivers. The cell's output resistance tables determine the slew delivered to the first internal cell. Directly impacts delay accuracy at input paths.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># Use BUFX8 from std cell lib to drive all inputs</span>
+<span class="ex-kw">set_driving_cell</span> <span class="ex-flag">-lib_cell</span> BUFX8 <span class="ex-flag">-library</span> sc_lib [<span class="ex-kw">all_inputs</span>]
+
+<span class="ex-comment"># Use specific output pin of a driving cell</span>
+<span class="ex-kw">set_driving_cell</span> <span class="ex-flag">-lib_cell</span> MX2X4 <span class="ex-flag">-pin</span> Y [<span class="ex-kw">get_ports</span> <span class="ex-str">SEL_*</span>]</div>
+    </div>
+    <div class="note-box">💡 set_driving_cell is preferred over set_drive because it uses actual NLDM/CCS driver models from the .lib, giving accurate slew computation. Always use set_driving_cell for sign-off quality.</div>
+  </div>
+</div>
+
+<!-- set_input_transition -->
+<div class="cmd-card cat-port" data-cat="port" data-keywords="set_input_transition slew input port transition rise fall">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_input_transition</span>
+        <span class="cat-badge">Port/Cell</span>
+      </div>
+      <div class="cmd-purpose">Directly assign a slew value to input ports (simpler alternative to set_driving_cell)</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_input_transition</span> <span class="syntax-opt">[-rise | -fall]</span> <span class="syntax-opt">[-min | -max]</span> <span class="syntax-val">transition_value</span> <span class="syntax-var">input_port_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Assigns a fixed slew time to the input port signal. Simpler than set_driving_cell but less accurate since it doesn't model how load-dependent the external driver is.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">The specified transition is used directly in timing arc calculations for the first cell receiving this input. Use when the external driver's exact characteristics are unknown.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-kw">set_input_transition</span> <span class="ex-num">0.15</span> [<span class="ex-kw">all_inputs</span>]
+<span class="ex-kw">set_input_transition</span> <span class="ex-flag">-rise</span> <span class="ex-num">0.12</span> <span class="ex-flag">-fall</span> <span class="ex-num">0.18</span> [<span class="ex-kw">get_ports</span> <span class="ex-str">CLK</span>]</div>
+    </div>
+  </div>
+</div>
+
+<!-- set_fanout_load -->
+<div class="cmd-card cat-port" data-cat="port" data-keywords="set_fanout_load port fanout weight unit load">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_fanout_load</span>
+        <span class="cat-badge">Port/Cell</span>
+      </div>
+      <div class="cmd-purpose">Assign a fanout load weight to a port for fanout constraint evaluation</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_fanout_load</span> <span class="syntax-val">fanout_value</span> <span class="syntax-var">port_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Assigns a numerical fanout load to an output port. This is counted against the set_max_fanout limit on the net driving this port. Models the downstream fanout the port contributes.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">Affects fanout DRC checking. If the external fanout load pushes the total over the limit, the tool reports a violation and may insert buffers.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- set_port_fanout_number -->
+<div class="cmd-card cat-port" data-cat="port" data-keywords="set_port_fanout_number fanout estimate output port model">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_port_fanout_number</span>
+        <span class="cat-badge">Port/Cell</span>
+      </div>
+      <div class="cmd-purpose">Set estimated number of external fanout connections for an output port</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_port_fanout_number</span> <span class="syntax-val">number</span> <span class="syntax-var">port_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Provides the STA tool with the expected number of loads the output port drives externally. This is used to select an appropriate wire load model for the port.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">The wire load model lookup uses this number to size the parasitic model. Higher fanout → larger RC wire model → more pessimistic output delay.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end port grid -->
+
+<!-- ═══════════════════════ SECTION: PATH GROUPS ═══════════════════════ -->
+<div class="section-header cat-path" id="sec-path">
+  <h2 style="color:var(--pink)">Path Groups &amp; Derating</h2>
+  <span class="section-count" style="background:var(--pink-bg);border:1px solid var(--pink-border);color:var(--pink)">4 commands</span>
+</div>
+<div class="cmd-grid">
+
+<!-- group_path -->
+<div class="cmd-card cat-path" data-cat="path" data-keywords="group_path path group reporting priority optimization weight">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">group_path</span>
+        <span class="cat-badge">Path Groups</span>
+      </div>
+      <div class="cmd-purpose">Create a named path group for organized reporting and targeted optimization</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">group_path</span> <span class="syntax-opt">-name &lt;group_name&gt;</span> <span class="syntax-opt">[-from &lt;objects&gt;]</span> <span class="syntax-opt">[-to &lt;objects&gt;]</span> <span class="syntax-opt">[-through &lt;objects&gt;]</span> <span class="syntax-opt">[-weight &lt;value&gt;]</span> <span class="syntax-opt">[-critical_range &lt;range&gt;]</span> <span class="syntax-opt">[-default]</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Groups timing paths into named categories (e.g., reg2reg, in2reg, reg2out, in2out, feedthrough). This controls both which paths are reported together and how the optimizer prioritizes fixing violations.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">The synthesis/optimization tool uses path group weights to prioritize. Higher weight = higher fixing priority. Reporting tools (report_timing) show paths per group. Default groups are created per clock automatically.</div>
+      </div>
+    </div>
+    <table class="flags-table">
+      <tr><th>Flag</th><th>Description</th></tr>
+      <tr><td class="flag">-name</td><td class="fdesc">Group name visible in reports and used by the optimizer to identify this category.</td></tr>
+      <tr><td class="flag">-weight</td><td class="fdesc">Relative priority: higher weight → optimizer focuses more effort. Default = 1.0.</td></tr>
+      <tr><td class="flag">-critical_range</td><td class="fdesc">Paths within this range (ns) of the worst negative slack are treated as critical and heavily optimized.</td></tr>
+      <tr><td class="flag">-default</td><td class="fdesc">Assigns all remaining unmatched paths to this group.</td></tr>
+    </table>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># Standard path group setup for a design</span>
+<span class="ex-kw">group_path</span> <span class="ex-flag">-name</span> <span class="ex-str">reg2reg</span>  <span class="ex-flag">-from</span> [<span class="ex-kw">all_registers</span> <span class="ex-flag">-clock</span> CLK] <span class="ex-flag">-to</span> [<span class="ex-kw">all_registers</span> <span class="ex-flag">-clock</span> CLK]
+<span class="ex-kw">group_path</span> <span class="ex-flag">-name</span> <span class="ex-str">in2reg</span>   <span class="ex-flag">-from</span> [<span class="ex-kw">all_inputs</span>] <span class="ex-flag">-to</span>   [<span class="ex-kw">all_registers</span>]
+<span class="ex-kw">group_path</span> <span class="ex-flag">-name</span> <span class="ex-str">reg2out</span>  <span class="ex-flag">-from</span> [<span class="ex-kw">all_registers</span>] <span class="ex-flag">-to</span> [<span class="ex-kw">all_outputs</span>]
+<span class="ex-kw">group_path</span> <span class="ex-flag">-name</span> <span class="ex-str">in2out</span>   <span class="ex-flag">-from</span> [<span class="ex-kw">all_inputs</span>] <span class="ex-flag">-to</span>   [<span class="ex-kw">all_outputs</span>]
+
+<span class="ex-comment"># Higher weight for register-to-register (most critical)</span>
+<span class="ex-kw">group_path</span> <span class="ex-flag">-name</span> <span class="ex-str">reg2reg_hi</span> <span class="ex-flag">-weight</span> <span class="ex-num">5.0</span> <span class="ex-flag">-critical_range</span> <span class="ex-num">0.5</span> <span class="ex-flag">-from</span> [<span class="ex-kw">all_registers</span>] <span class="ex-flag">-to</span> [<span class="ex-kw">all_registers</span>]</div>
+    </div>
+  </div>
+</div>
+
+<!-- set_path_derate -->
+<div class="cmd-card cat-path" data-cat="path" data-keywords="set_path_derate OCV AOCV POCV derate early late cell net derating factor">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_timing_derate</span>
+        <span class="cat-badge">Path Groups</span>
+      </div>
+      <div class="cmd-purpose">Apply OCV/AOCV/POCV derating factors to cell and net delays</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_timing_derate</span> <span class="syntax-opt">[-cell_delay | -cell_check | -net_delay]</span> <span class="syntax-opt">[-data | -clock]</span> <span class="syntax-opt">[-early | -late]</span> <span class="syntax-opt">[-rise | -fall]</span> <span class="syntax-opt">[-from &lt;objects&gt;]</span> <span class="syntax-opt">[-to &lt;objects&gt;]</span> <span class="syntax-opt">[-through &lt;objects&gt;]</span> <span class="syntax-val">derate_factor</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Models On-Chip Variation (OCV): delays along the launch path and capture path are derated differently to account for spatial variation across the die. A factor > 1.0 makes delays pessimistic (late), < 1.0 makes them optimistic (early).</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">For setup: launch path is derated late (slowed) and capture path is derated early (sped up), tightening setup margin. For hold: launch early, capture late. This is the industry-standard OCV methodology for sign-off.</div>
+      </div>
+    </div>
+    <table class="flags-table">
+      <tr><th>Flag</th><th>Description</th></tr>
+      <tr><td class="flag">-cell_delay</td><td class="fdesc">Apply to cell propagation delays (combinational and sequential arcs).</td></tr>
+      <tr><td class="flag">-cell_check</td><td class="fdesc">Apply to setup/hold timing checks (su/hold windows of registers).</td></tr>
+      <tr><td class="flag">-net_delay</td><td class="fdesc">Apply to net/interconnect delays (RC parasitics).</td></tr>
+      <tr><td class="flag">-data / -clock</td><td class="fdesc">Apply only to data paths or clock paths respectively.</td></tr>
+      <tr><td class="flag">-early / -late</td><td class="fdesc">-late derates toward pessimistic (delays increase). -early derates toward optimistic (delays decrease).</td></tr>
+    </table>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># Standard flat OCV: 5% pessimism on late, 5% optimism on early</span>
+<span class="ex-kw">set_timing_derate</span> <span class="ex-flag">-late</span>  <span class="ex-flag">-cell_delay</span> <span class="ex-num">1.05</span>  <span class="ex-comment"># launch path 5% slower</span>
+<span class="ex-kw">set_timing_derate</span> <span class="ex-flag">-early</span> <span class="ex-flag">-cell_delay</span> <span class="ex-num">0.95</span>  <span class="ex-comment"># capture path 5% faster</span>
+
+<span class="ex-comment"># Clock path gets more aggressive derating than data</span>
+<span class="ex-kw">set_timing_derate</span> <span class="ex-flag">-clock</span> <span class="ex-flag">-late</span>  <span class="ex-flag">-cell_delay</span> <span class="ex-num">1.08</span>
+<span class="ex-kw">set_timing_derate</span> <span class="ex-flag">-clock</span> <span class="ex-flag">-early</span> <span class="ex-flag">-cell_delay</span> <span class="ex-num">0.92</span></div>
+    </div>
+    <div class="warning-box"><b>⚠ Senior Note:</b> AOCV (Advanced OCV) and POCV (Parametric OCV) replace flat derating at advanced nodes. AOCV uses depth-based derate tables; POCV uses sigma-based statistical distributions. set_timing_derate is still needed for AOCV/POCV but the values come from library tables, not fixed percentages.</div>
+  </div>
+</div>
+
+<!-- set_clock_gating_check -->
+<div class="cmd-card cat-path" data-cat="path" data-keywords="set_clock_gating_check enable setup hold clock gate ICG">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_clock_gating_check</span>
+        <span class="cat-badge">Path Groups</span>
+      </div>
+      <div class="cmd-purpose">Define setup/hold requirements for clock gating enable signals</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_clock_gating_check</span> <span class="syntax-opt">[-setup &lt;time&gt;]</span> <span class="syntax-opt">[-hold &lt;time&gt;]</span> <span class="syntax-opt">[-rise | -fall]</span> <span class="syntax-opt">[-high | -low]</span> <span class="syntax-var">[object_list]</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">For integrated clock gating (ICG) cells, the enable signal must be stable before the clock gating window opens (setup) and remain stable after it closes (hold). This command defines those requirements when they differ from what the Liberty model specifies.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">Adds a timing check between the enable pin and the gated clock output. Violations mean glitchy clocks can propagate, causing functional failures. The tool may flag EN-to-GCLK paths as new timing paths requiring fixing.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># 200ps setup, 100ps hold for all ICG enable pins</span>
+<span class="ex-kw">set_clock_gating_check</span> <span class="ex-flag">-setup</span> <span class="ex-num">0.2</span> <span class="ex-flag">-hold</span> <span class="ex-num">0.1</span>
+
+<span class="ex-comment"># Override for specific ICG cells in power domain A</span>
+<span class="ex-kw">set_clock_gating_check</span> <span class="ex-flag">-setup</span> <span class="ex-num">0.3</span> <span class="ex-flag">-hold</span> <span class="ex-num">0.15</span> [<span class="ex-kw">get_cells</span> <span class="ex-str">PD_A/ICG*</span>]</div>
+    </div>
+  </div>
+</div>
+
+<!-- set_data_check -->
+<div class="cmd-card cat-path" data-cat="path" data-keywords="set_data_check data check setup hold between signals non-clock">
+  <div class="cmd-header">
+    <div>
+      <div class="cmd-name-block">
+        <span class="cmd-name">set_data_check</span>
+        <span class="cat-badge">Path Groups</span>
+      </div>
+      <div class="cmd-purpose">Define a timing relationship (setup/hold) between two data signals</div>
+    </div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_data_check</span> <span class="syntax-opt">[-setup &lt;time&gt;]</span> <span class="syntax-opt">[-hold &lt;time&gt;]</span> <span class="syntax-opt">[-rise_from | -fall_from | -from]</span> <span class="syntax-opt">[-rise_to | -fall_to | -to]</span> <span class="syntax-opt">[-clock &lt;clock&gt;]</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Creates a non-clock timing check between two data pins. Used when one data signal acts as a quasi-clock or enable for another — for example, a write-enable arriving before an address strobe. Not a conventional STA check, but powerful for special cases.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">The STA tool inserts a timing check arc: the -to pin must arrive at least -setup time before, and at most -hold time after, the -from pin's transition. Violations indicate temporal ordering issues between control signals.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># WE must arrive 0.5ns before ADDR (data-to-data relationship)</span>
+<span class="ex-kw">set_data_check</span> <span class="ex-flag">-from</span> [<span class="ex-kw">get_pins</span> <span class="ex-str">MEM_CTRL/WE</span>] <span class="ex-flag">-to</span> [<span class="ex-kw">get_pins</span> <span class="ex-str">MEM_CTRL/ADDR</span>] <span class="ex-flag">-setup</span> <span class="ex-num">0.5</span></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end path grid -->
+
+<!-- ═══════════════════════ SECTION: OBJECT QUERY ═══════════════════════ -->
+<div class="section-header cat-query" id="sec-query">
+  <h2 style="color:#79c0ff">Object Query Commands</h2>
+  <span class="section-count" style="background:#0c2540;border:1px solid #1f6feb88;color:#79c0ff">10 commands</span>
+</div>
+<div class="cmd-grid">
+
+<!-- get_ports -->
+<div class="cmd-card cat-query" data-cat="query" data-keywords="get_ports port query collection filter wildcard">
+  <div class="cmd-header">
+    <div><div class="cmd-name-block"><span class="cmd-name">get_ports</span><span class="cat-badge">Query</span></div>
+    <div class="cmd-purpose">Return a collection of design ports matching a pattern</div></div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">get_ports</span> <span class="syntax-opt">[-hierarchical]</span> <span class="syntax-opt">[-filter &lt;expression&gt;]</span> <span class="syntax-opt">[-regexp | -nocase]</span> <span class="syntax-var">patterns</span></div>
+    <table class="flags-table">
+      <tr><th>Flag</th><th>Description</th></tr>
+      <tr><td class="flag">-hierarchical</td><td class="fdesc">Search through all hierarchical levels, not just the top.</td></tr>
+      <tr><td class="flag">-filter</td><td class="fdesc">Apply an attribute filter. E.g., -filter "direction == in" for input ports only.</td></tr>
+      <tr><td class="flag">-regexp</td><td class="fdesc">Use regular expressions instead of glob patterns.</td></tr>
+    </table>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-kw">get_ports</span> <span class="ex-str">CLK*</span>                     <span class="ex-comment"># all ports starting with CLK</span>
+<span class="ex-kw">get_ports</span> <span class="ex-flag">-filter</span> "direction == in"  <span class="ex-comment"># same as all_inputs</span>
+<span class="ex-kw">get_ports</span> {DATA_IN[*]}              <span class="ex-comment"># bus notation</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- get_pins -->
+<div class="cmd-card cat-query" data-cat="query" data-keywords="get_pins cell pin query hierarchy hierarchical filter">
+  <div class="cmd-header">
+    <div><div class="cmd-name-block"><span class="cmd-name">get_pins</span><span class="cat-badge">Query</span></div>
+    <div class="cmd-purpose">Return a collection of cell instance pins matching a pattern</div></div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">get_pins</span> <span class="syntax-opt">[-hierarchical]</span> <span class="syntax-opt">[-filter &lt;expr&gt;]</span> <span class="syntax-opt">[-regexp]</span> <span class="syntax-opt">[-of_objects &lt;cells_or_nets&gt;]</span> <span class="syntax-var">patterns</span></div>
+    <table class="flags-table">
+      <tr><th>Flag</th><th>Description</th></tr>
+      <tr><td class="flag">-hierarchical</td><td class="fdesc">Search recursively through all hierarchy levels. Use carefully — can return enormous collections.</td></tr>
+      <tr><td class="flag">-of_objects</td><td class="fdesc">Return pins belonging to specific cells or nets. Very useful for constraining by adjacency.</td></tr>
+    </table>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-kw">get_pins</span> <span class="ex-str">U_CORE/U_ALU/A*</span>            <span class="ex-comment"># pins of specific cell</span>
+<span class="ex-kw">get_pins</span> <span class="ex-flag">-hierarchical</span> <span class="ex-flag">-filter</span> "is_clock_pin == true"  <span class="ex-comment"># all CPs</span>
+<span class="ex-kw">get_pins</span> <span class="ex-flag">-of_objects</span> [<span class="ex-kw">get_cells</span> <span class="ex-str">FF_*</span>]  <span class="ex-comment"># all pins of FF cells</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- get_nets -->
+<div class="cmd-card cat-query" data-cat="query" data-keywords="get_nets net query collection wire signal">
+  <div class="cmd-header">
+    <div><div class="cmd-name-block"><span class="cmd-name">get_nets</span><span class="cat-badge">Query</span></div>
+    <div class="cmd-purpose">Return a collection of nets (wires/signals) matching a pattern</div></div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">get_nets</span> <span class="syntax-opt">[-hierarchical]</span> <span class="syntax-opt">[-filter &lt;expr&gt;]</span> <span class="syntax-opt">[-of_objects &lt;pins_or_ports&gt;]</span> <span class="syntax-opt">[-regexp]</span> <span class="syntax-var">patterns</span></div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-kw">get_nets</span> <span class="ex-str">CLK_NET*</span>
+<span class="ex-kw">get_nets</span> <span class="ex-flag">-of_objects</span> [<span class="ex-kw">get_pins</span> <span class="ex-str">U_BUF/Y</span>]  <span class="ex-comment"># net driven by a pin</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- get_cells -->
+<div class="cmd-card cat-query" data-cat="query" data-keywords="get_cells cell instance query hierarchical filter type">
+  <div class="cmd-header">
+    <div><div class="cmd-name-block"><span class="cmd-name">get_cells</span><span class="cat-badge">Query</span></div>
+    <div class="cmd-purpose">Return a collection of cell instances matching a pattern</div></div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">get_cells</span> <span class="syntax-opt">[-hierarchical]</span> <span class="syntax-opt">[-filter &lt;expr&gt;]</span> <span class="syntax-opt">[-of_objects &lt;pins_or_nets&gt;]</span> <span class="syntax-opt">[-regexp]</span> <span class="syntax-var">patterns</span></div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-kw">get_cells</span> <span class="ex-flag">-hierarchical</span> <span class="ex-flag">-filter</span> "is_sequential == true"  <span class="ex-comment"># all FFs/latches</span>
+<span class="ex-kw">get_cells</span> <span class="ex-str">U_CORE/*/FF_*</span>     <span class="ex-comment"># wildcard path match</span>
+<span class="ex-kw">get_cells</span> <span class="ex-flag">-of_objects</span> [<span class="ex-kw">get_nets</span> <span class="ex-str">CLK_NET</span>]  <span class="ex-comment"># cells on a net</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- get_clocks -->
+<div class="cmd-card cat-query" data-cat="query" data-keywords="get_clocks clock collection query">
+  <div class="cmd-header">
+    <div><div class="cmd-name-block"><span class="cmd-name">get_clocks</span><span class="cat-badge">Query</span></div>
+    <div class="cmd-purpose">Return a collection of defined clock objects matching a name pattern</div></div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">get_clocks</span> <span class="syntax-opt">[-filter &lt;expr&gt;]</span> <span class="syntax-opt">[-regexp]</span> <span class="syntax-var">patterns</span></div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-kw">get_clocks</span> <span class="ex-str">CLK_*</span>           <span class="ex-comment"># all clocks starting with CLK_</span>
+<span class="ex-kw">get_clocks</span> [<span class="ex-kw">all_clocks</span>]   <span class="ex-comment"># equivalent to all_clocks</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- get_lib_cells / get_lib_pins -->
+<div class="cmd-card cat-query" data-cat="query" data-keywords="get_lib_cells get_lib_pins library cell pin query dont_use driving_cell">
+  <div class="cmd-header">
+    <div><div class="cmd-name-block"><span class="cmd-name">get_lib_cells / get_lib_pins</span><span class="cat-badge">Query</span></div>
+    <div class="cmd-purpose">Query cells and pins from Liberty libraries directly</div></div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">get_lib_cells</span> <span class="syntax-opt">[-filter &lt;expr&gt;]</span> <span class="syntax-opt">[-regexp]</span> <span class="syntax-var">library_pattern/cell_pattern</span>
+<span class="syntax-kw">get_lib_pins</span>  <span class="syntax-opt">[-filter &lt;expr&gt;]</span> <span class="syntax-opt">[-regexp]</span> <span class="syntax-var">library_pattern/cell_pattern/pin_pattern</span></div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-kw">get_lib_cells</span> <span class="ex-str">sc_lib/BUFX*</span>      <span class="ex-comment"># all BUF cells from library</span>
+<span class="ex-kw">get_lib_pins</span>  <span class="ex-str">sc_lib/DFFX1/CP</span>   <span class="ex-comment"># clock pin of DFFX1</span>
+<span class="ex-kw">set_dont_use</span>  [<span class="ex-kw">get_lib_cells</span> <span class="ex-str">sc_lib/*X0P5</span>]  <span class="ex-comment"># exclude weakest cells</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- all_inputs / all_outputs / all_clocks / all_registers -->
+<div class="cmd-card cat-query" data-cat="query" data-keywords="all_inputs all_outputs all_clocks all_registers convenience collection">
+  <div class="cmd-header">
+    <div><div class="cmd-name-block"><span class="cmd-name">all_inputs / all_outputs / all_clocks / all_registers</span><span class="cat-badge">Query</span></div>
+    <div class="cmd-purpose">Convenience commands returning predefined collections of design objects</div></div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">all_inputs</span>    <span class="syntax-opt">[-no_clock]</span>
+<span class="syntax-kw">all_outputs</span>   
+<span class="syntax-kw">all_clocks</span>    
+<span class="syntax-kw">all_registers</span> <span class="syntax-opt">[-clock &lt;clock&gt;]</span> <span class="syntax-opt">[-edge_triggered | -level_sensitive]</span> <span class="syntax-opt">[-master_slave]</span> <span class="syntax-opt">[-cells | -data_pins | -clock_pins | -output_pins]</span></div>
+    <table class="flags-table">
+      <tr><th>Command</th><th>Returns</th></tr>
+      <tr><td class="flag">all_inputs</td><td class="fdesc">All input and inout ports of the current design. -no_clock excludes clock ports.</td></tr>
+      <tr><td class="flag">all_outputs</td><td class="fdesc">All output and inout ports.</td></tr>
+      <tr><td class="flag">all_clocks</td><td class="fdesc">All clock objects defined via create_clock or create_generated_clock.</td></tr>
+      <tr><td class="flag">all_registers</td><td class="fdesc">All sequential elements (FFs, latches). Use -clock to filter by clock domain. Use -cells to return cell objects, -data_pins/-clock_pins/-output_pins for specific pins.</td></tr>
+    </table>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-kw">set_input_delay</span> <span class="ex-flag">-max</span> <span class="ex-num">2.0</span> <span class="ex-flag">-clock</span> CLK [<span class="ex-kw">all_inputs</span> <span class="ex-flag">-no_clock</span>]
+<span class="ex-kw">set_output_delay</span> <span class="ex-flag">-max</span> <span class="ex-num">1.0</span> <span class="ex-flag">-clock</span> CLK [<span class="ex-kw">all_outputs</span>]
+<span class="ex-kw">group_path</span> <span class="ex-flag">-name</span> r2r <span class="ex-flag">-from</span> [<span class="ex-kw">all_registers</span> <span class="ex-flag">-clock</span> CLK <span class="ex-flag">-output_pins</span>] <span class="ex-flag">-to</span> [<span class="ex-kw">all_registers</span> <span class="ex-flag">-clock</span> CLK <span class="ex-flag">-data_pins</span>]</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end query grid -->
+
+<!-- ═══════════════════════ SECTION: MISC ═══════════════════════ -->
+<div class="section-header cat-misc" id="sec-misc">
+  <h2 style="color:var(--text2)">Misc / Control Commands</h2>
+  <span class="section-count" style="background:var(--bg3);border:1px solid var(--border2);color:var(--text2)">11 commands</span>
+</div>
+<div class="cmd-grid">
+
+<!-- set_case_analysis -->
+<div class="cmd-card cat-misc" data-cat="misc" data-keywords="set_case_analysis logic 0 1 constant scan mode functional">
+  <div class="cmd-header">
+    <div><div class="cmd-name-block"><span class="cmd-name">set_case_analysis</span><span class="cat-badge">Misc</span></div>
+    <div class="cmd-purpose">Force a signal to a constant value (0, 1, rise, fall) for timing analysis</div></div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_case_analysis</span> <span class="syntax-val">0 | 1 | zero | one | rise | fall | rising | falling</span> <span class="syntax-var">object_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Freezes a port or pin to a fixed logic value for the duration of analysis. Used to trim untimed paths (scan mode signals, test mux selects, power mode selectors) so the tool only analyzes the active functional path.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">The tool propagates this constant through combinational logic. Cells that become logically redundant (tied-off mux inputs, etc.) are removed from the timing graph — dramatically reducing false violations in functional mode STA.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># Functional mode: scan enable is 0 (not scanning)</span>
+<span class="ex-kw">set_case_analysis</span> <span class="ex-num">0</span> [<span class="ex-kw">get_ports</span> <span class="ex-str">SCAN_EN</span>]
+
+<span class="ex-comment"># Core power domain active (not in retention)</span>
+<span class="ex-kw">set_case_analysis</span> <span class="ex-num">1</span> [<span class="ex-kw">get_pins</span> <span class="ex-str">PWR_CTRL/CORE_ON</span>]
+
+<span class="ex-comment"># Test mux in normal mode</span>
+<span class="ex-kw">set_case_analysis</span> <span class="ex-num">0</span> [<span class="ex-kw">get_ports</span> <span class="ex-str">TEST_MODE</span>]</div>
+    </div>
+    <div class="warning-box"><b>⚠ Senior Note:</b> set_case_analysis trims paths permanently from the analysis. In a multi-mode flow, each mode (functional, scan, retention) should have its own set of case analyses. Never apply functional case analysis to a scan-mode sign-off run.</div>
+  </div>
+</div>
+
+<!-- set_ideal_network -->
+<div class="cmd-card cat-misc" data-cat="misc" data-keywords="set_ideal_network ideal no delay reset tie clock reset ideal latency transition">
+  <div class="cmd-header">
+    <div><div class="cmd-name-block"><span class="cmd-name">set_ideal_network</span><span class="cat-badge">Misc</span></div>
+    <div class="cmd-purpose">Mark a net or port as having zero propagation delay (ideal)</div></div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_ideal_network</span> <span class="syntax-opt">[-no_propagate]</span> <span class="syntax-var">object_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Declares a net as having no timing delay — buffers on this net are not modeled for delay, skew, or slew degradation. Used for reset networks, tie-off rails, power management control signals that should not contribute to timing paths.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">The net has zero delay and ideal transition. No DRC violations are reported on it. -no_propagate also prevents clock propagation through it.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># Reset network is ideal (global reset, not timing-critical)</span>
+<span class="ex-kw">set_ideal_network</span> [<span class="ex-kw">get_nets</span> <span class="ex-str">RST_N_GLOBAL</span>]
+<span class="ex-kw">set_ideal_network</span> <span class="ex-flag">-no_propagate</span> [<span class="ex-kw">get_ports</span> <span class="ex-str">ASYNC_RST</span>]</div>
+    </div>
+  </div>
+</div>
+
+<!-- set_dont_touch -->
+<div class="cmd-card cat-misc" data-cat="misc" data-keywords="set_dont_touch dont touch preserve cell net ECO optimization">
+  <div class="cmd-header">
+    <div><div class="cmd-name-block"><span class="cmd-name">set_dont_touch</span><span class="cat-badge">Misc</span></div>
+    <div class="cmd-purpose">Prevent the tool from modifying a cell or net during optimization/ECO</div></div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_dont_touch</span> <span class="syntax-opt">[-value true | false]</span> <span class="syntax-var">object_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Instructs synthesis, placement, and ECO tools not to resize, remap, or remove a cell or buffer chain. Used for hand-crafted clock buffers, manually sized critical path cells, IP interface cells, and physical-only cells.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">Timing of dont_touch cells is still analyzed but not optimized. If a dont_touch cell creates a violation, the tool cannot fix it automatically — engineer must intervene. Overuse blocks convergence.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># Protect hand-placed clock spine buffers</span>
+<span class="ex-kw">set_dont_touch</span> [<span class="ex-kw">get_cells</span> <span class="ex-str">CLK_SPINE_BUF_*</span>]
+
+<span class="ex-comment"># Clear dont_touch to allow re-optimization</span>
+<span class="ex-kw">set_dont_touch</span> <span class="ex-flag">-value</span> false [<span class="ex-kw">get_cells</span> <span class="ex-str">CLK_SPINE_BUF_*</span>]</div>
+    </div>
+  </div>
+</div>
+
+<!-- set_dont_use -->
+<div class="cmd-card cat-misc" data-cat="misc" data-keywords="set_dont_use dont use library cell exclude forbidden synthesis optimization">
+  <div class="cmd-header">
+    <div><div class="cmd-name-block"><span class="cmd-name">set_dont_use</span><span class="cat-badge">Misc</span></div>
+    <div class="cmd-purpose">Prevent synthesis/optimization from using specific library cells</div></div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_dont_use</span> <span class="syntax-opt">[-value true | false]</span> <span class="syntax-var">lib_cell_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Marks library cells as forbidden for use by synthesis and optimization. Used to exclude: weak drive cells that always cause DRC issues, cells with poor characterization, deprecated cells, analog-mixed-signal interface cells reserved for manual placement.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">During optimization/synthesis, excluded cells are never inserted or chosen for replacement. Existing instances in the netlist are analyzed but never optimized away if also set_dont_touch. Purely a synthesis guidance constraint.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-comment"># Exclude all X0P5 (half-strength) cells — too weak for this design</span>
+<span class="ex-kw">set_dont_use</span> [<span class="ex-kw">get_lib_cells</span> <span class="ex-str">sc_lib/*X0P5</span>]
+
+<span class="ex-comment"># Exclude clock cells from data path synthesis</span>
+<span class="ex-kw">set_dont_use</span> [<span class="ex-kw">get_lib_cells</span> <span class="ex-str">sc_lib/CKB*</span>]</div>
+    </div>
+  </div>
+</div>
+
+<!-- set_resistance / set_capacitance -->
+<div class="cmd-card cat-misc" data-cat="misc" data-keywords="set_resistance set_capacitance net R C parasitics manual">
+  <div class="cmd-header">
+    <div><div class="cmd-name-block"><span class="cmd-name">set_resistance / set_capacitance</span><span class="cat-badge">Misc</span></div>
+    <div class="cmd-purpose">Directly assign resistance or capacitance to a net (override parasitics)</div></div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_resistance</span> <span class="syntax-opt">[-min | -max]</span> <span class="syntax-val">value</span> <span class="syntax-var">net_list</span>
+<span class="syntax-kw">set_capacitance</span> <span class="syntax-opt">[-min | -max]</span> <span class="syntax-val">value</span> <span class="syntax-var">net_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Manually override the parasitic resistance (Ω) or capacitance (pF) of a specific net. Used when SPEF is unavailable for a net, or when you want to model a known special case (e.g., a bond wire, I/O pad capacitance, ESD structure).</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect on STA</div>
+        <div class="info-text">Directly affects the net's RC delay computation. These values override anything extracted from SPEF for those nets. Mainly used in pre-layout or for special net cases.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-kw">set_capacitance</span> <span class="ex-num">0.5</span> [<span class="ex-kw">get_nets</span> <span class="ex-str">PAD_CLK_NET</span>]  <span class="ex-comment"># 0.5pF pad capacitance</span>
+<span class="ex-kw">set_resistance</span>  <span class="ex-num">25</span>  [<span class="ex-kw">get_nets</span> <span class="ex-str">ESD_NET</span>]     <span class="ex-comment"># 25Ω ESD resistor</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- current_design / current_instance -->
+<div class="cmd-card cat-misc" data-cat="misc" data-keywords="current_design current_instance hierarchy scope context design top">
+  <div class="cmd-header">
+    <div><div class="cmd-name-block"><span class="cmd-name">current_design / current_instance</span><span class="cat-badge">Misc</span></div>
+    <div class="cmd-purpose">Set the active design scope or hierarchical instance for subsequent commands</div></div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">current_design</span> <span class="syntax-opt">[design_name]</span>
+<span class="syntax-kw">current_instance</span> <span class="syntax-opt">[instance_name]</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">current_design</div>
+        <div class="info-text">Sets the active top-level design for constraints. All subsequent SDC commands apply to this design. Call without argument to query the current design name.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">current_instance</div>
+        <div class="info-text">Descends into a hierarchical instance to apply block-level SDC. Call with no argument to ascend back to top-level. Used in bottom-up hierarchical STA flows.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-kw">current_design</span> TOP_CHIP          <span class="ex-comment"># set top-level design</span>
+
+<span class="ex-comment"># Apply constraints inside a sub-block</span>
+<span class="ex-kw">current_instance</span> U_CORE/U_CPU
+<span class="ex-kw">set_max_transition</span> <span class="ex-num">0.1</span> [<span class="ex-kw">current_design</span>]
+<span class="ex-kw">current_instance</span>                  <span class="ex-comment"># return to top</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- set_ideal_latency / set_ideal_transition -->
+<div class="cmd-card cat-misc" data-cat="misc" data-keywords="set_ideal_latency set_ideal_transition ideal network latency slew">
+  <div class="cmd-header">
+    <div><div class="cmd-name-block"><span class="cmd-name">set_ideal_latency / set_ideal_transition</span><span class="cat-badge">Misc</span></div>
+    <div class="cmd-purpose">Set latency and transition for ideal networks (used with set_ideal_network)</div></div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_ideal_latency</span>    <span class="syntax-opt">[-rise | -fall]</span> <span class="syntax-opt">[-min | -max]</span> <span class="syntax-val">latency_value</span> <span class="syntax-var">object_list</span>
+<span class="syntax-kw">set_ideal_transition</span> <span class="syntax-opt">[-rise | -fall]</span> <span class="syntax-opt">[-min | -max]</span> <span class="syntax-val">transition_value</span> <span class="syntax-var">object_list</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">set_ideal_latency</div>
+        <div class="info-text">Adds a non-zero latency to a network declared as ideal. Used when a reset/clock net is ideal (no RC variation) but still has a known insertion delay (e.g., from a known driver stage).</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">set_ideal_transition</div>
+        <div class="info-text">Sets the transition time on an ideal network. Since ideal networks skip slew propagation, this provides the slew value for cells driven by that net.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-kw">set_ideal_network</span>     [<span class="ex-kw">get_nets</span> <span class="ex-str">RST_N</span>]
+<span class="ex-kw">set_ideal_latency</span>     <span class="ex-num">0.3</span> [<span class="ex-kw">get_nets</span> <span class="ex-str">RST_N</span>]    <span class="ex-comment"># 300ps insertion delay</span>
+<span class="ex-kw">set_ideal_transition</span>  <span class="ex-num">0.1</span> [<span class="ex-kw">get_nets</span> <span class="ex-str">RST_N</span>]    <span class="ex-comment"># 100ps transition</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- set_max_dynamic_power / set_max_leakage_power -->
+<div class="cmd-card cat-misc" data-cat="misc" data-keywords="set_max_dynamic_power set_max_leakage_power power constraint synthesis low power">
+  <div class="cmd-header">
+    <div><div class="cmd-name-block"><span class="cmd-name">set_max_dynamic_power / set_max_leakage_power</span><span class="cat-badge">Misc</span></div>
+    <div class="cmd-purpose">Power constraints for synthesis and power-aware optimization</div></div>
+    <button class="toggle-btn" onclick="toggleCard(this)">collapse ▲</button>
+  </div>
+  <div class="cmd-body collapsible">
+    <div class="syntax-block"><span class="syntax-kw">set_max_dynamic_power</span>  <span class="syntax-val">power_value</span> <span class="syntax-opt">[object_list]</span>
+<span class="syntax-kw">set_max_leakage_power</span>  <span class="syntax-val">power_value</span> <span class="syntax-opt">[object_list]</span></div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label">Purpose</div>
+        <div class="info-text">Specifies power budgets for the design. Dynamic power is switching+short-circuit. Leakage is always-on static current. Used in power-constrained synthesis to select low-power cells.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label">Effect</div>
+        <div class="info-text">Synthesis tools use these to guide cell selection — preferring multi-Vt cells, smaller cells, and power gating opportunities. These are soft constraints; timing takes priority unless power-first mode is enabled.</div>
+      </div>
+    </div>
+    <div class="example-block">
+      <div class="example-label">Examples</div>
+      <div class="example-code"><span class="ex-kw">set_max_dynamic_power</span>  <span class="ex-num">50e-3</span>   <span class="ex-comment"># 50mW dynamic power budget</span>
+<span class="ex-kw">set_max_leakage_power</span>  <span class="ex-num">1e-3</span>    <span class="ex-comment"># 1mW leakage budget</span></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end misc grid -->
+
+<div class="no-results" id="no-results" style="display:none">
+  <h3>No commands found</h3>
+  <p>Try a different keyword or clear the search.</p>
+</div>
+
+</main>
+
+<script>
+function toggleCard(btn) {
+  const body = btn.closest('.cmd-card').querySelector('.cmd-body');
+  const isCollapsed = body.classList.contains('collapsed');
+  if (isCollapsed) {
+    body.classList.remove('collapsed');
+    body.style.maxHeight = body.scrollHeight + 'px';
+    btn.textContent = 'collapse ▲';
+  } else {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    requestAnimationFrame(() => {
+      body.style.maxHeight = '0px';
+      body.classList.add('collapsed');
+    });
+    btn.textContent = 'expand ▼';
+  }
+}
+
+// Set initial maxHeight for all open bodies
+document.querySelectorAll('.cmd-body.collapsible:not(.collapsed)').forEach(b => {
+  b.style.maxHeight = 'none';
+});
+
+let activeFilter = 'all';
+const searchInput = document.getElementById('search');
+const cards = document.querySelectorAll('.cmd-card');
+const filterBtns = document.querySelectorAll('.filter-btn');
+const visibleCount = document.getElementById('visible-count');
+const noResults = document.getElementById('no-results');
+
+function updateVisibility() {
+  const query = searchInput.value.toLowerCase().trim();
+  let visible = 0;
+  cards.forEach(card => {
+    const cat = card.dataset.cat;
+    const keywords = (card.dataset.keywords || '').toLowerCase();
+    const text = card.textContent.toLowerCase();
+    const catMatch = activeFilter === 'all' || cat === activeFilter;
+    const queryMatch = !query || text.includes(query) || keywords.includes(query);
+    if (catMatch && queryMatch) {
+      card.classList.remove('hidden');
+      visible++;
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+  visibleCount.textContent = visible;
+  noResults.style.display = visible === 0 ? 'block' : 'none';
+  
+  // Show/hide section headers
+  document.querySelectorAll('.section-header').forEach(h => {
+    const id = h.id.replace('sec-', '');
+    const anyVisible = [...cards].some(c => c.dataset.cat === id && !c.classList.contains('hidden'));
+    h.style.display = anyVisible ? 'flex' : 'none';
+  });
+}
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.cat;
+    updateVisibility();
+  });
+});
+
+searchInput.addEventListener('input', updateVisibility);
+
+// Initialize count
+visibleCount.textContent = cards.length;
+</script>
+</body>
+</html>
