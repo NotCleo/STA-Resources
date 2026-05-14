@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STA Interview Questions — Internship to Senior Engineer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg:       #080c12;
+    --bg2:      #0e1420;
+    --bg3:      #141c2e;
+    --bg4:      #1a2438;
+    --border:   #1e2d45;
+    --border2:  #2a3f5f;
+    --text:     #d8e4f4;
+    --text2:    #8aa0bc;
+    --text3:    #4a6080;
+    --accent:   #3d9bff;
+    --accent2:  #1a5aad;
+    --mono:     'IBM Plex Mono', monospace;
+    --sans:     'IBM Plex Sans', sans-serif;
+
+    --easy-bg: #071a0e; --easy-border: #1a5c2a; --easy-text: #3fb950;
+    --med-bg:  #1a1400; --med-border:  #5c4000; --med-text:  #d4a017;
+    --hard-bg: #1a0a00; --hard-border: #7a3000; --hard-text:  #f07030;
+    --exp-bg:  #1a0016; --exp-border:  #7a0050; --exp-text:   #e040a0;
+
+    --c-basics: #3d9bff;   --c-basics-bg: #071428;   --c-basics-bd: #1a3d6a;
+    --c-clock:  #a371f7;   --c-clock-bg:  #120820;   --c-clock-bd:  #4a2080;
+    --c-path:   #58d4c8;   --c-path-bg:   #061818;   --c-path-bd:   #1a5550;
+    --c-sdc:    #f0b840;   --c-sdc-bg:    #1a1000;   --c-sdc-bd:    #6a4400;
+    --c-exc:    #f07070;   --c-exc-bg:    #1a0808;   --c-exc-bd:    #6a1a1a;
+    --c-ocv:    #60d090;   --c-ocv-bg:    #071510;   --c-ocv-bd:    #1a5030;
+    --c-cdc:    #ff9060;   --c-cdc-bg:    #180a00;   --c-cdc-bd:    #703010;
+    --c-mcmm:   #80c0f0;   --c-mcmm-bg:   #081520;   --c-mcmm-bd:   #204060;
+    --c-eco:    #d090f0;   --c-eco-bg:    #120818;   --c-eco-bd:    #502070;
+    --c-adv:    #f0d060;   --c-adv-bg:    #181200;   --c-adv-bd:    #604800;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─────────────────────────────────── */
+  header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 28px 14px;
+    position: sticky; top: 0; z-index: 200;
+    backdrop-filter: blur(8px);
+  }
+  .hd-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .hd-title h1 { font-size: 18px; font-weight: 600; color: var(--accent); letter-spacing: -0.3px; }
+  .hd-title p  { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .hd-search { flex: 1; min-width: 200px; max-width: 360px; position: relative; }
+  .hd-search input {
+    width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 12px 8px 34px; color: var(--text); font-size: 12px; font-family: var(--sans);
+    outline: none; transition: border-color .15s;
+  }
+  .hd-search input:focus { border-color: var(--accent2); }
+  .hd-search svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text3); }
+
+  .filters { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 12px; }
+  .fb {
+    padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border);
+    background: transparent; color: var(--text2); font-size: 11px; font-family: var(--sans);
+    cursor: pointer; transition: all .15s; white-space: nowrap;
+  }
+  .fb:hover { border-color: var(--border2); color: var(--text); }
+  .fb.active { font-weight: 500; }
+  .fb[data-f="all"].active   { background: var(--bg4); border-color: var(--border2); color: var(--text); }
+  .fb[data-f="easy"].active  { background: var(--easy-bg); border-color: var(--easy-border); color: var(--easy-text); }
+  .fb[data-f="medium"].active{ background: var(--med-bg);  border-color: var(--med-border);  color: var(--med-text);  }
+  .fb[data-f="hard"].active  { background: var(--hard-bg); border-color: var(--hard-border); color: var(--hard-text); }
+  .fb[data-f="expert"].active{ background: var(--exp-bg);  border-color: var(--exp-border);  color: var(--exp-text);  }
+  .fb[data-f="basics"].active { background: var(--c-basics-bg); border-color: var(--c-basics-bd); color: var(--c-basics); }
+  .fb[data-f="clock"].active  { background: var(--c-clock-bg);  border-color: var(--c-clock-bd);  color: var(--c-clock);  }
+  .fb[data-f="path"].active   { background: var(--c-path-bg);   border-color: var(--c-path-bd);   color: var(--c-path);   }
+  .fb[data-f="sdc"].active    { background: var(--c-sdc-bg);    border-color: var(--c-sdc-bd);    color: var(--c-sdc);    }
+  .fb[data-f="exc"].active    { background: var(--c-exc-bg);    border-color: var(--c-exc-bd);    color: var(--c-exc);    }
+  .fb[data-f="ocv"].active    { background: var(--c-ocv-bg);    border-color: var(--c-ocv-bd);    color: var(--c-ocv);    }
+  .fb[data-f="cdc"].active    { background: var(--c-cdc-bg);    border-color: var(--c-cdc-bd);    color: var(--c-cdc);    }
+  .fb[data-f="mcmm"].active   { background: var(--c-mcmm-bg);   border-color: var(--c-mcmm-bd);   color: var(--c-mcmm);   }
+  .fb[data-f="eco"].active    { background: var(--c-eco-bg);    border-color: var(--c-eco-bd);    color: var(--c-eco);    }
+  .fb[data-f="adv"].active    { background: var(--c-adv-bg);    border-color: var(--c-adv-bd);    color: var(--c-adv);    }
+
+  .hd-stats { font-size: 11px; color: var(--text3); margin-top: 8px; }
+  .hd-stats b { color: var(--text2); }
+
+  /* ─── MAIN ────────────────────────────────────── */
+  main { padding: 20px 28px 60px; max-width: 1280px; margin: 0 auto; }
+
+  .sec-hd {
+    display: flex; align-items: center; gap: 10px;
+    margin: 32px 0 14px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sec-hd h2 { font-size: 14px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+  .sec-cnt { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+
+  .q-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(580px, 1fr)); gap: 12px; }
+
+  /* ─── CARD ────────────────────────────────────── */
+  .qc {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color .15s;
+  }
+  .qc:hover { border-color: var(--border2); }
+  .qc.hidden { display: none; }
+
+  .qc-hd {
+    padding: 11px 14px;
+    display: flex; align-items: flex-start; gap: 10px;
+    cursor: pointer; user-select: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .qc-hd:hover { background: var(--bg3); }
+
+  .q-num {
+    font-family: var(--mono); font-size: 10px; font-weight: 600;
+    color: var(--text3); min-width: 30px; padding-top: 2px; flex-shrink: 0;
+  }
+  .q-txt { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.4; }
+  .q-badges { display: flex; gap: 5px; align-items: center; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+
+  .diff-badge {
+    font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 10px;
+    letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap;
+  }
+  .diff-badge.easy   { background: var(--easy-bg); border: 1px solid var(--easy-border); color: var(--easy-text); }
+  .diff-badge.medium { background: var(--med-bg);  border: 1px solid var(--med-border);  color: var(--med-text);  }
+  .diff-badge.hard   { background: var(--hard-bg); border: 1px solid var(--hard-border); color: var(--hard-text); }
+  .diff-badge.expert { background: var(--exp-bg);  border: 1px solid var(--exp-border);  color: var(--exp-text);  }
+
+  .cat-badge-sm {
+    font-size: 9px; padding: 2px 7px; border-radius: 10px; white-space: nowrap;
+  }
+  .cat-basics { background: var(--c-basics-bg); border: 1px solid var(--c-basics-bd); color: var(--c-basics); }
+  .cat-clock  { background: var(--c-clock-bg);  border: 1px solid var(--c-clock-bd);  color: var(--c-clock);  }
+  .cat-path   { background: var(--c-path-bg);   border: 1px solid var(--c-path-bd);   color: var(--c-path);   }
+  .cat-sdc    { background: var(--c-sdc-bg);    border: 1px solid var(--c-sdc-bd);    color: var(--c-sdc);    }
+  .cat-exc    { background: var(--c-exc-bg);    border: 1px solid var(--c-exc-bd);    color: var(--c-exc);    }
+  .cat-ocv    { background: var(--c-ocv-bg);    border: 1px solid var(--c-ocv-bd);    color: var(--c-ocv);    }
+  .cat-cdc    { background: var(--c-cdc-bg);    border: 1px solid var(--c-cdc-bd);    color: var(--c-cdc);    }
+  .cat-mcmm   { background: var(--c-mcmm-bg);   border: 1px solid var(--c-mcmm-bd);   color: var(--c-mcmm);   }
+  .cat-eco    { background: var(--c-eco-bg);    border: 1px solid var(--c-eco-bd);    color: var(--c-eco);    }
+  .cat-adv    { background: var(--c-adv-bg);    border: 1px solid var(--c-adv-bd);    color: var(--c-adv);    }
+
+  .expand-ico { color: var(--text3); font-size: 11px; flex-shrink: 0; padding-top: 3px; transition: transform .2s; }
+  .qc.open .expand-ico { transform: rotate(180deg); }
+
+  /* ─── BODY ────────────────────────────────────── */
+  .qc-body { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+  .qc.open .qc-body { max-height: 9000px; }
+
+  .qc-inner { padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+
+  .ans-block {}
+  .block-lbl {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+    color: var(--text3); margin-bottom: 5px;
+  }
+  .ans-text { font-size: 13px; color: var(--text2); line-height: 1.65; }
+  .ans-text strong { color: var(--text); font-weight: 600; }
+
+  .code-inline {
+    font-family: var(--mono); font-size: 11px; background: var(--bg);
+    border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; color: #a5d6ff;
+  }
+  .code-block {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+    padding: 10px 12px; font-family: var(--mono); font-size: 11.5px; color: #e6edf3;
+    line-height: 1.8; overflow-x: auto; white-space: pre; margin-top: 6px;
+  }
+  .code-block .kw  { color: #ff7b72; }
+  .code-block .val { color: #ffa657; }
+  .code-block .str { color: #a5d6ff; }
+  .code-block .cmt { color: #4a6080; }
+  .code-block .num { color: #79c0ff; }
+  .code-block .flg { color: #d2a8ff; }
+
+  .short-box {
+    background: var(--bg3); border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 12px; font-size: 12px; color: var(--text2);
+    border-left: 3px solid var(--accent2);
+  }
+  .short-box .block-lbl { margin-bottom: 3px; }
+
+  .fu-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; }
+  .fu-list { list-style: none; display: flex; flex-direction: column; gap: 5px; margin-top: 6px; }
+  .fu-list li {
+    font-size: 12px; color: var(--text2); padding: 5px 8px;
+    border-radius: 4px; background: var(--bg4); border: 1px solid var(--border);
+    cursor: pointer; transition: border-color .12s;
+  }
+  .fu-list li:hover { border-color: var(--accent2); color: var(--text); }
+  .fu-list li::before { content: "↪ "; color: var(--text3); font-size: 11px; }
+  .fu-ans { display: none; margin-top: 4px; padding: 6px 8px; background: var(--bg); border-radius: 4px; border: 1px solid var(--border); font-size: 12px; color: var(--text2); }
+  .fu-list li.open .fu-ans { display: block; }
+  .fu-q { font-size: 12px; }
+
+  .warn-box {
+    background: #1a1000; border: 1px solid #5a3a00; border-radius: 6px;
+    padding: 8px 12px; font-size: 12px; color: #c08020;
+    border-left: 3px solid #8a5010;
+  }
+  .note-box {
+    background: #071428; border: 1px solid #1a3d6a; border-radius: 6px;
+    padding: 8px 12px; font-size: 12px; color: #5090d0;
+    border-left: 3px solid #1a5aad;
+  }
+  .formula-box {
+    background: #0a0a18; border: 1px solid #2a2a50; border-radius: 6px;
+    padding: 10px 12px; font-family: var(--mono); font-size: 12px; color: #d0d0f0;
+    line-height: 1.9; margin-top: 6px;
+  }
+
+  .no-results { text-align: center; padding: 80px 20px; color: var(--text3); }
+  .no-results h3 { font-size: 16px; color: var(--text2); margin-bottom: 8px; }
+
+  @media (max-width: 680px) {
+    header, main { padding: 12px 14px; }
+    .q-grid { grid-template-columns: 1fr; }
+    .q-badges { gap: 3px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd-top">
+    <div class="hd-title">
+      <h1>STA Interview Questions</h1>
+      <p>Static Timing Analysis — Internship to Senior Engineer · 210 Questions</p>
+    </div>
+    <div class="hd-search">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4"/><path d="M11 11l2.5 2.5"/></svg>
+      <input id="srch" type="text" placeholder="Search questions, concepts, commands…" autocomplete="off">
+    </div>
+  </div>
+  <div class="filters">
+    <button class="fb active" data-f="all">All</button>
+    <span style="color:var(--text3);font-size:11px;padding:4px 2px;">Difficulty:</span>
+    <button class="fb" data-f="easy">✦ Easy</button>
+    <button class="fb" data-f="medium">✦ Medium</button>
+    <button class="fb" data-f="hard">✦ Hard</button>
+    <button class="fb" data-f="expert">✦ Expert</button>
+    <span style="color:var(--text3);font-size:11px;padding:4px 6px;">Topic:</span>
+    <button class="fb" data-f="basics">Basics</button>
+    <button class="fb" data-f="clock">Clocks</button>
+    <button class="fb" data-f="path">Timing Paths</button>
+    <button class="fb" data-f="sdc">SDC Commands</button>
+    <button class="fb" data-f="exc">Exceptions</button>
+    <button class="fb" data-f="ocv">OCV/Derating</button>
+    <button class="fb" data-f="cdc">CDC</button>
+    <button class="fb" data-f="mcmm">MCMM</button>
+    <button class="fb" data-f="eco">Optimization/ECO</button>
+    <button class="fb" data-f="adv">Advanced/Sign-off</button>
+  </div>
+  <div class="hd-stats">Showing <b id="vc">210</b> of <b>210</b> questions</div>
+</header>
+
+<main id="main">
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 1 — BASICS
+══════════════════════════════════════════════════════════════ -->
+<div class="sec-hd" data-sec="basics">
+  <h2 style="color:var(--c-basics)">Basics of STA</h2>
+  <span class="sec-cnt" style="background:var(--c-basics-bg);border:1px solid var(--c-basics-bd);color:var(--c-basics)">25 questions</span>
+</div>
+<div class="q-grid">
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="sta static timing analysis definition purpose">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q1</span>
+  <span class="q-txt">What is Static Timing Analysis (STA)?</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text">Static Timing Analysis is a method of verifying the timing correctness of a digital circuit <strong>without requiring test vectors or dynamic simulation</strong>. It exhaustively checks every possible timing path in the design against timing constraints to ensure the circuit can reliably operate at the target frequency.<br><br>
+    Key characteristics: (1) <strong>Static</strong> — no need for input stimuli, it analyzes structure; (2) <strong>Exhaustive</strong> — every path is checked, unlike simulation which is limited by test coverage; (3) <strong>Fast</strong> — scales to million-gate designs in reasonable runtime; (4) Determines <strong>setup and hold slack</strong> on all paths.</div>
+  </div>
+  <div class="short-box"><div class="block-lbl">Short Answer</div>Exhaustive, vector-free method to verify digital circuit timing against setup/hold constraints on all paths simultaneously.</div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">How is STA different from dynamic timing simulation?</span><div class="fu-ans">STA checks all paths algebraically without stimuli — exhaustive but may include impossible paths. Dynamic simulation uses test vectors — more realistic but coverage-limited. STA is used for timing sign-off; simulation for functional verification. STA cannot catch glitches or races that depend on data patterns.</div></li>
+      <li onclick="togFU(this)"><span class="fu-q">What are the limitations of STA?</span><div class="fu-ans">STA cannot detect: functional false paths (sensitization issues), non-timing functional bugs, glitches not related to path delay, issues requiring vector-dependent analysis. It also cannot verify asynchronous interfaces without explicit constraints — those must be verified separately.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="timing path types four in2reg reg2reg reg2out in2out">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q2</span>
+  <span class="q-txt">What are the four types of timing paths in STA?</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>1. Input port → Register data pin (in2reg):</strong> Path from design input port through combinational logic to a flip-flop's D pin. Constrained by <code class="code-inline">set_input_delay</code>.<br><br>
+    <strong>2. Register output → Register data pin (reg2reg):</strong> The most common path — from a flip-flop's Q/CK to the next flip-flop's D. These form the core of internal timing analysis.<br><br>
+    <strong>3. Register output → Output port (reg2out):</strong> From flip-flop Q through combinational logic to an output port. Constrained by <code class="code-inline">set_output_delay</code>.<br><br>
+    <strong>4. Input port → Output port (in2out / combinational):</strong> Purely combinational path with no registers. These should be minimized in synchronous design for predictability.</div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">Which path type is usually most critical and why?</span><div class="fu-ans">reg2reg — because these form the majority of paths in a synchronous design, they determine the maximum operating frequency (fmax), and they must all close timing simultaneously. in2out can also be critical if the combinational depth is large.</div></li>
+      <li onclick="togFU(this)"><span class="fu-q">Can a path start at a clock pin?</span><div class="fu-ans">Yes — in STA, the "startpoint" of a reg2reg path is the clock pin (CK) of the launch flip-flop, not its Q pin. The clock pin is where the launching edge is defined. Q is just the output of the propagation from CK.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="setup time definition violation metastability">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q3</span>
+  <span class="q-txt">What is setup time of a flip-flop? What happens when it is violated?</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>Setup time (Tsu)</strong> is the minimum time the data input (D) must be stable and valid <strong>before</strong> the active clock edge arrives at the flip-flop's CK pin. It is needed for the internal latch circuitry to sense and prepare to capture the data reliably.<br><br>
+    <strong>On violation:</strong> If data arrives too late (within the setup window), the flip-flop enters <strong>metastability</strong> — its output Q enters an indeterminate voltage state between 0 and 1, oscillating or settling slowly. This can propagate incorrect data downstream. The flip-flop will eventually resolve, but the time to resolve is statistically unbounded. In silicon, this causes <strong>functional failures</strong> that are intermittent and hard to debug.</div>
+  </div>
+  <div class="short-box"><div class="block-lbl">Short Answer</div>Minimum data stable time BEFORE clock edge. Violation → metastability → functional failures.</div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">Can setup violations be fixed without changing the design frequency?</span><div class="fu-ans">Yes — by reducing combinational logic depth (faster cells, fewer gates), using higher drive strength cells, reducing net RC (rerouting), or by optimizing the clock tree (useful skew). The key is reducing data path delay OR increasing the available timing window.</div></li>
+      <li onclick="togFU(this)"><span class="fu-q">How does the tool model setup time from a Liberty library?</span><div class="fu-ans">Liberty files characterize setup time as a 2D table indexed by data input slew and clock input slew. The worst-case Tsu from these tables is used in the timing check equation at each flip-flop.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="hold time definition violation cannot fix frequency">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q4</span>
+  <span class="q-txt">What is hold time? Why are hold violations considered more serious than setup violations?</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>Hold time (Th)</strong> is the minimum time the data input must remain stable and valid <strong>after</strong> the active clock edge. The flip-flop needs this time to fully latch and store the captured value before the input can change.<br><br>
+    <strong>Why hold violations are more serious:</strong><br>
+    1. <strong>Cannot be fixed by reducing frequency</strong> — hold is a DC (speed-independent) constraint. Slowing the clock makes no difference; the path still violates at any frequency.<br>
+    2. <strong>Must be fixed before tape-out</strong> — unlike setup which can be waived with frequency derating, hold violations will cause functional failures in silicon at any speed.<br>
+    3. <strong>Fixes add delay permanently</strong> — hold fixes require inserting buffers, increasing power and area, sometimes causing congestion.<br>
+    4. <strong>Late detection risk</strong> — hold violations often appear after CTS when real clock skew is known.</div>
+  </div>
+  <div class="short-box"><div class="block-lbl">Short Answer</div>Min data stable time AFTER clock edge. Cannot be fixed by reducing frequency — requires added delay in silicon.</div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">Where are hold violations most likely to occur?</span><div class="fu-ans">Short paths with few/no logic gates between flip-flops (adjacent FFs, scan chains, clock dividers, paths after wide muxes). Also after useful skew insertion for setup fixes — improving one path's setup can create hold issues on adjacent paths.</div></li>
+      <li onclick="togFU(this)"><span class="fu-q">What is the impact of post-CTS hold violations appearing suddenly?</span><div class="fu-ans">Pre-CTS, ideal clocks mean zero skew — hold is checked conservatively at the same edge. Post-CTS, real skew can make capture clock arrive later than launch clock (negative skew for hold), causing paths that passed pre-CTS to fail post-CTS. This is why post-CTS hold fixing is a critical step.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="slack positive negative wns tns definition">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q5</span>
+  <span class="q-txt">What is slack? Define WNS and TNS.</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>Slack</strong> = Required Arrival Time − Actual Arrival Time<br>
+    — <strong>Positive slack:</strong> timing is met (data arrives with margin to spare)<br>
+    — <strong>Negative slack:</strong> timing violation (data arrives too late for setup, or too early for hold)<br>
+    — <strong>Zero slack:</strong> exactly on the limit — passes but no margin<br><br>
+    <strong>WNS (Worst Negative Slack):</strong> The single most negative slack across all timing paths in the entire design — or within a path group. It represents the worst violation and determines how far the design is from closure.<br><br>
+    <strong>TNS (Total Negative Slack):</strong> The algebraic sum of all negative slacks across all endpoints. It measures the cumulative violation magnitude — a design with 1000 slightly-failing paths has a very large TNS even if WNS is small. Sign-off requires WNS = 0 and TNS = 0.</div>
+  </div>
+  <div class="short-box"><div class="block-lbl">Short Answer</div>WNS = single worst path slack. TNS = sum of all negative slacks. Both must be ≥ 0 at sign-off.</div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">Which is more important for project status — WNS or TNS?</span><div class="fu-ans">Both matter. WNS tells you the worst case (how far you are from the hardest path closing). TNS tells you the workload — a large TNS means many paths to fix, which takes more ECO iterations even if WNS is small. Early in a project, focus on TNS to reduce total work; near tape-out, WNS drives the last mile.</div></li>
+      <li onclick="togFU(this)"><span class="fu-q">What is FNS (Failing Negative Slack endpoints)?</span><div class="fu-ans">FNS or "failing endpoints" count is the number of timing endpoints (register D pins, output ports) that have negative slack. It's reported in report_timing_summary. Reducing FNS to zero is the goal. Useful alongside TNS to gauge closure progress.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="setup check equation formula required arrival">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q6</span>
+  <span class="q-txt">Write the setup timing check equation from first principles.</span>
+  <span class="q-badges"><span class="diff-badge medium">Medium</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text">For a register-to-register path with the same clock:</div>
+    <div class="formula-box">Data Arrival Time  = T_launch_edge + T_clk_launch (CK latency) + T_ckq + T_comb
+Data Required Time = T_capture_edge + T_clk_capture (CK latency) − Tsu − T_uncertainty_setup
+
+Setup Slack = Data Required Time − Data Arrival Time
+
+Where:
+  T_launch_edge  = clock edge that launches data (typically 0 for first cycle)
+  T_capture_edge = T_launch_edge + T_period  (1 cycle later)
+  T_clk_launch   = clock tree delay to launch FF clock pin
+  T_clk_capture  = clock tree delay to capture FF clock pin
+  T_ckq          = flip-flop clock-to-Q propagation delay
+  T_comb         = combinational logic + routing delay
+  Tsu            = flip-flop setup time requirement
+  T_uncertainty  = clock uncertainty (jitter + guardband)</div>
+    <div class="ans-text" style="margin-top:8px;"><strong>Positive skew</strong> (capture clock later) improves setup: T_clk_capture − T_clk_launch > 0 adds to the window.</div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">How does the hold check equation differ?</span><div class="fu-ans">Hold: Data Arrival (min path) ≥ Capture_clock_edge + T_clk_capture (min) + Th + T_uncertainty_hold. For hold, use MINIMUM data path delay and MINIMUM launch clock delay (fastest path), and MAXIMUM capture clock delay (slowest capture). Hold slack = Arrival − Required (reversed sign from setup).</div></li>
+      <li onclick="togFU(this)"><span class="fu-q">If clock skew is +0.2ns (positive), how does it affect setup and hold slacks?</span><div class="fu-ans">Positive skew = capture clock arrives later. For setup: Required time increases (better setup slack, +0.2ns). For hold: Arrival − Required decreases (worse hold slack, −0.2ns). Positive skew always helps setup, hurts hold. Useful skew exploits this tradeoff.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="clock skew definition positive negative">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q7</span>
+  <span class="q-txt">What is clock skew? What is positive vs negative skew?</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>Clock skew</strong> is the spatial difference in clock arrival times at two flip-flops that are supposed to be triggered by the same edge. It arises from different path lengths through the clock tree (buffers, wires).<br><br>
+    <strong>Skew = T_clk_capture − T_clk_launch</strong><br><br>
+    <strong>Positive skew (capture later than launch):</strong> The capture FF's clock arrives after the launch FF's clock. This <em>helps setup</em> (gives data more time to travel) but <em>hurts hold</em> (data could arrive before the delayed capture edge).<br><br>
+    <strong>Negative skew (capture earlier than launch):</strong> The capture FF's clock arrives before the launch FF's clock. This <em>hurts setup</em> (less time available) but <em>helps hold</em>.</div>
+  </div>
+  <div class="short-box"><div class="block-lbl">Short Answer</div>Skew = clock arrival time difference at capture vs launch FF. Positive skew: helps setup, hurts hold.</div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">What is useful skew and how is it different from unwanted skew?</span><div class="fu-ans">Useful skew is intentionally introduced skew to improve timing — the CTS tool deliberately delays one FF's clock to help a critical path. Unwanted skew arises from unbalanced clock trees and hurts other paths. CTS by default tries to minimize skew (balanced tree); useful skew optimization intentionally imbalances it for timing improvement.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="jitter clock cycle-to-cycle variation PLL noise">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q8</span>
+  <span class="q-txt">What is clock jitter and how is it modeled in STA?</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>Jitter</strong> is the <strong>cycle-to-cycle variation</strong> in the clock period — the clock edge does not always arrive at exactly T, T+period, T+2×period. It deviates due to: PLL phase noise, power supply noise (VCO sensitivity), electromagnetic interference, substrate noise coupling.<br><br>
+    <strong>Modeling in STA:</strong> Jitter is captured as part of <code class="code-inline">set_clock_uncertainty</code>. The uncertainty value includes:<br>
+    — PLL output jitter<br>
+    — On-chip clock tree variation (partially replaced by OCV post-CTS)<br>
+    — Guardband for measurement/extraction inaccuracy<br><br>
+    Typical values: 100–300ps setup uncertainty for a well-characterized PLL. Jitter effectively <strong>reduces the available setup window</strong>.</div>
+  </div>
+  <div class="short-box"><div class="block-lbl">Short Answer</div>Cycle-to-cycle clock period variation; modeled as set_clock_uncertainty which tightens setup slack.</div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">What is the difference between random jitter and deterministic jitter?</span><div class="fu-ans">Random jitter (RJ) is unbounded Gaussian noise — statistically characterized with sigma. Deterministic jitter (DJ) has a fixed magnitude with specific causes (power supply ripple at a known frequency, crosstalk). Total jitter (TJ) = DJ + some multiple of RJ sigma at a target BER. PLL specs often separate RJ and DJ.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="PVT corner process voltage temperature slow fast typical">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q9</span>
+  <span class="q-txt">What is a PVT corner? Which corner is used for setup analysis vs hold analysis?</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>PVT = Process + Voltage + Temperature</strong> — the three factors that determine cell delay:<br>
+    — <strong>Process:</strong> Manufacturing variation (fast/typical/slow transistors)<br>
+    — <strong>Voltage:</strong> Supply voltage (higher Vdd = faster cells)<br>
+    — <strong>Temperature:</strong> Operating temperature (traditionally, hotter = slower; but see temperature inversion)<br><br>
+    <strong>Setup analysis corner (worst-case slow):</strong> <code class="code-inline">ss_0.72v_125c</code><br>
+    Slow process + lowest voltage + highest temperature → slowest cells → hardest to meet setup.<br><br>
+    <strong>Hold analysis corner (best-case fast):</strong> <code class="code-inline">ff_0.88v_-40c</code><br>
+    Fast process + highest voltage + lowest temperature → fastest cells → data arrives fastest → most likely to violate hold.</div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">What is temperature inversion and which nodes is it relevant to?</span><div class="fu-ans">At 28nm and below, at low supply voltages (near-threshold), transistor delay can actually DECREASE with increasing temperature in some operating regions — this is temperature inversion. It means the slowest corner might be cold (ss_0.72v_-40c), not hot. Both hot and cold slow corners must be checked at advanced nodes. This is why modern MCMM setups include multiple temperature points.</div></li>
+      <li onclick="togFU(this)"><span class="fu-q">What is a typical corner and when do you use it?</span><div class="fu-ans">tt_0.8v_25c — used for power estimation, functional verification, and early-stage analysis. Not used for sign-off timing because it doesn't capture worst-case margins. However, it's useful for detecting paths that are wildly off even under nominal conditions.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="propagation delay cell delay transition slew definition">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q10</span>
+  <span class="q-txt">What is propagation delay and what factors affect it?</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text">Propagation delay is the time for a signal to travel from a cell's input to its output, measured at 50% of the voltage swing. Two main components:<br><br>
+    <strong>1. Cell (intrinsic) delay:</strong> Time within the cell itself. Depends on: input slew rate (faster input → faster output, lower cell delay), output capacitive load (more load → longer charge time → higher delay), cell drive strength, temperature, voltage, process.<br><br>
+    <strong>2. Net (interconnect) delay:</strong> RC delay of the routing wire. Depends on: wire length and width (resistance), coupling capacitance to adjacent nets, technology node RC values.<br><br>
+    In NLDM (Non-Linear Delay Model), cell delay is looked up from a 2D table with axes: input_slew × output_load.</div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">How does fanout affect propagation delay?</span><div class="fu-ans">High fanout means the driving gate sees higher total load capacitance. More capacitance → more time to charge/discharge → higher cell delay + slower output slew. The slower output slew propagates to downstream cells, increasing their input-slew-dependent delays too. This cascades and is why set_max_fanout and buffer insertion matter.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="critical path definition fmax maximum frequency">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q11</span>
+  <span class="q-txt">What is the critical path and how is fmax derived from STA results?</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text">The <strong>critical path</strong> is the timing path with the <strong>least (or most negative) setup slack</strong> — the longest path in terms of delay relative to the clock period. It is the bottleneck that limits the maximum operating frequency.<br><br>
+    <strong>fmax from STA:</strong></div>
+    <div class="formula-box">fmax = 1 / (T_constrained - WNS_setup)
+
+Example: Clock period = 1.0ns (1GHz), WNS = -0.15ns
+→ Actual fmax = 1 / (1.0 + 0.15) = 1 / 1.15 ≈ 869 MHz
+
+If WNS is positive, the design can run faster than constrained:
+fmax = 1 / (1.0 - 0.05) = 1 / 0.95 ≈ 1.05 GHz</div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">How do you find the critical path in PrimeTime?</span><div class="fu-ans">report_timing -delay_type max -max_paths 1 -sort_by slack shows the single worst path. To see top N: report_timing -max_paths 10 -nworst 1 -sort_by slack -delay_type max. The output shows startpoint, endpoint, and the full path trace with individual delays.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="timing arc cell input output clock Q setup hold">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q12</span>
+  <span class="q-txt">What is a timing arc? What types of timing arcs exist in a flip-flop?</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text">A <strong>timing arc</strong> is a defined delay relationship from one pin to another within a cell or between cells in the timing graph. Each arc has characterized delay values in the Liberty library.<br><br>
+    <strong>Flip-flop timing arcs:</strong><br>
+    — <strong>CK→Q (propagation arc):</strong> Clock-to-output delay. How long after the clock edge does Q become valid? Used in arrival time computation.<br>
+    — <strong>D→CK (setup arc):</strong> Setup time constraint — D must be stable this long before CK edge.<br>
+    — <strong>D→CK (hold arc):</strong> Hold time constraint — D must remain stable this long after CK edge.<br>
+    — <strong>CK→Q (hold arc):</strong> For hold analysis, minimum CK→Q delay is used.<br>
+    — <strong>Async pin arcs (RN/SN→Q):</strong> Asynchronous reset/set to Q arcs — recovery/removal checks.<br>
+    — <strong>Pulse width arcs:</strong> Minimum high/low pulse width on clock pin.</div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">What is a negative setup time? Is it physically possible?</span><div class="fu-ans">Yes — a negative setup time means data can arrive AFTER the clock edge and still be captured correctly. This occurs in some high-speed, specially designed flip-flops or when clock path internal delays create a window where data can arrive slightly late. It effectively gives extra time but increases Q propagation delay. Rare but valid in Liberty models.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="metastability synchronizer two flip-flop">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q13</span>
+  <span class="q-txt">What is metastability? Can STA fully detect or prevent it?</span>
+  <span class="q-badges"><span class="diff-badge medium">Medium</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>Metastability</strong> is a physical phenomenon where a flip-flop's output enters an indeterminate voltage state (neither valid 0 nor 1) when the setup or hold time is violated. The bistable storage element has two stable states; when forced into the unstable equilibrium point, it oscillates or drifts before eventually resolving — taking a random amount of time.<br><br>
+    <strong>Can STA detect or prevent it?</strong><br>
+    — <strong>STA can detect setup/hold violations</strong> that could CAUSE metastability within the same clock domain.<br>
+    — <strong>STA CANNOT prevent metastability at asynchronous clock crossings</strong> (CDC paths) because by definition there's no timing relationship — some clock edge will always be within the metastability window.<br>
+    — The solution for CDC is <strong>synchronizers</strong> (chains of FFs with sufficient MTBF). STA verifies the synchronizer chain timing, not the metastability probability itself.</div>
+  </div>
+  <div class="short-box"><div class="block-lbl">Short Answer</div>STA detects violations that CAUSE metastability. Cannot prevent it at CDC — that requires synchronizer design.</div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="slack timing path startpoint endpoint">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q14</span>
+  <span class="q-txt">What is the startpoint and endpoint of a timing path?</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>Startpoint:</strong> Where the data propagation begins. Can be:<br>
+    — Clock pin (CK) of a flip-flop/latch (reg2reg, reg2out paths)<br>
+    — Input port of the design (in2reg, in2out paths)<br><br>
+    <strong>Endpoint:</strong> Where the data propagation terminates and the timing check is performed. Can be:<br>
+    — Data pin (D) of a flip-flop/latch (setup/hold check performed here)<br>
+    — Output port of the design<br>
+    — Asynchronous control pin (RN, SN, EN) for recovery/removal checks<br><br>
+    The tool reports which startpoint/endpoint pair has the worst timing in each report.</div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">Is a net ever a timing path endpoint?</span><div class="fu-ans">No — nets are never directly endpoints in STA. Timing checks are performed at pins (cell input pins or output ports), not on nets. However, constraints like set_false_path -through [get_nets X] use nets as waypoints, not endpoints.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="transition slew set_max_transition rise fall">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q15</span>
+  <span class="q-txt">What is slew (transition time) and why does it matter in STA?</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>Slew (transition time)</strong> is how fast a signal transitions from 0→1 (rise) or 1→0 (fall), measured between 10–90% or 20–80% of the supply voltage. Faster slew = sharper signal edges.<br><br>
+    <strong>Why it matters:</strong><br>
+    1. <strong>Cell delay increases with slow input slew</strong> — NLDM tables show delay worsens as input slew increases. A slow-input cell takes longer to reach its switching threshold.<br>
+    2. <strong>Short-circuit power:</strong> Slow transitions cause longer periods when both PMOS and NMOS are simultaneously ON → increased short-circuit current.<br>
+    3. <strong>Signal integrity:</strong> Slow slew makes signals more susceptible to crosstalk glitches and noise.<br>
+    4. <strong>DRC check:</strong> <code class="code-inline">set_max_transition</code> limits slew to prevent degradation cascading through the design.</div>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="library liberty cell characterization NLDM CCS">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q16</span>
+  <span class="q-txt">What is a Liberty (.lib) file and what information does it contain for STA?</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text">A Liberty (.lib) file is the <strong>timing and power characterization file</strong> for a standard cell library. It contains:<br><br>
+    — <strong>Cell timing arcs:</strong> Propagation delays (NLDM or CCS tables indexed by input slew × output load)<br>
+    — <strong>Flip-flop timing:</strong> Setup, hold, recovery, removal, CK→Q delays<br>
+    — <strong>DRC attributes:</strong> max_capacitance, max_transition, max_fanout per cell pin<br>
+    — <strong>Operating conditions:</strong> PVT point this library represents<br>
+    — <strong>Pin capacitances:</strong> Input and output pin capacitance values<br>
+    — <strong>Function:</strong> Boolean function of each output pin<br>
+    — <strong>Power:</strong> Dynamic and leakage power tables<br>
+    — <strong>AOCV/LVF tables:</strong> Advanced OCV or Parametric OCV variation data</div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">What is the difference between NLDM and CCS models in Liberty?</span><div class="fu-ans">NLDM (Non-Linear Delay Model): 2D tables of delay and output slew vs input_slew × output_cap. Simple, compact, widely supported. CCS (Composite Current Source): Models the cell output as a time-varying current source waveform. More accurate at advanced nodes because it captures load-dependent current behavior, enabling accurate waveform propagation and SI analysis. CCS files are larger but required for sign-off below 28nm.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="report_timing output read understand slack path">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q17</span>
+  <span class="q-txt">Walk through a typical report_timing output. What does each section mean?</span>
+  <span class="q-badges"><span class="diff-badge medium">Medium</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text">A PrimeTime report_timing output contains:</div>
+    <div class="code-block"><span class="cmt">  Startpoint: FF1/CK (rising edge-triggered FF, clocked by CLK)</span>
+<span class="cmt">  Endpoint:   FF2/D  (rising edge-triggered FF, clocked by CLK)</span>
+<span class="cmt">  Path Group: CLK</span>
+<span class="cmt">  Path Type:  max (setup analysis)</span>
+<span class="cmt">  ─── Data Arrival Time ──────────────────────────────</span>
+<span class="cmt">  clock CLK (rise edge)             0.00   0.00   ← launch edge</span>
+<span class="cmt">  clock tree delay (CLK→FF1/CK)     0.45   0.45   ← clock latency</span>
+<span class="cmt">  FF1/CK→Q (rise)                   0.12   0.57   ← CK-to-Q delay</span>
+<span class="cmt">  U1/A→Y (AND gate)                 0.08   0.65   ← logic delay</span>
+<span class="cmt">  net: n1 (wire delay)              0.05   0.70</span>
+<span class="cmt">  FF2/D  arrival                         0.70   ← data arrives here</span>
+<span class="cmt">  ─── Data Required Time ─────────────────────────────</span>
+<span class="cmt">  clock CLK (rise edge)             1.00   1.00   ← capture edge</span>
+<span class="cmt">  clock tree delay (CLK→FF2/CK)     0.40   1.40   ← capture CK latency</span>
+<span class="cmt">  library setup time               -0.08   1.32   ← subtract Tsu</span>
+<span class="cmt">  clock uncertainty                -0.15   1.17   ← subtract uncertainty</span>
+<span class="cmt">  data required time                     1.17</span>
+<span class="cmt">  ───────────────────────────────────────────────────</span>
+<span class="cmt">  slack (MET)                           0.47   ← required - arrival</span></div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">What does -path_type full_clock do differently?</span><div class="fu-ans">full_clock expands the entire clock path trace (from clock source, through all clock buffers, to the FF CK pin) in addition to the data path. Without it, clock path is shown as a single lumped "clock tree delay" number. Use full_clock when debugging clock tree issues or unexpected skew.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="check_timing unconstrained paths constraint completeness">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q18</span>
+  <span class="q-txt">What is check_timing and why must you run it before sign-off?</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><code class="code-inline">check_timing</code> is a PrimeTime command that audits the constraint setup for completeness and correctness. It flags:<br><br>
+    — <strong>Unconstrained paths:</strong> Timing paths with no clock — these are skipped silently, hiding potential violations<br>
+    — <strong>Multiple clocks on one pin</strong> without proper handling<br>
+    — <strong>Logic loops:</strong> Combinational feedback loops that break STA<br>
+    — <strong>No input/output delays</strong> on ports<br>
+    — <strong>Mismatched clock definitions</strong><br>
+    — <strong>Ideal network issues</strong><br><br>
+    Unconstrained paths are the #1 sign-off risk. A path with no clock appears to have zero slack (or infinite positive slack) — masking a real violation. <code class="code-inline">check_timing</code> output should have zero errors before sign-off.</div>
+  </div>
+  <div class="warn-box">⚠ Senior Note: In large SoCs, hundreds of unconstrained paths are common in early stages. Each "no clock" must be traced to either: (a) missing create_clock, (b) clock not propagating through a gate, or (c) a genuine non-functional path needing set_false_path.</div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="fanout max_fanout definition DRC">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q19</span>
+  <span class="q-txt">What is fanout and what DRC issues does high fanout cause?</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>Fanout</strong> is the number of input pins driven by a single gate output (or port). High fanout means the driving cell sees a large total capacitive load.<br><br>
+    <strong>DRC issues from high fanout:</strong><br>
+    — <strong>Slow slew:</strong> Large load capacitance → longer charge/discharge time → slow transitions → slew DRC violation<br>
+    — <strong>High cell delay:</strong> Driver's delay increases with load — degrades setup timing<br>
+    — <strong>Noise sensitivity:</strong> Slow-slew nets are more susceptible to crosstalk glitches<br>
+    — <strong>Power:</strong> Large switching capacitance → higher dynamic power<br><br>
+    Fix: <code class="code-inline">set_max_fanout 20 [current_design]</code> — synthesis/optimization inserts buffer trees to split high-fanout nets.</div>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="clock to Q delay ck q flip flop propagation min max">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q20</span>
+  <span class="q-txt">What is clock-to-Q delay (Tco)? How is it different for setup vs hold analysis?</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>Clock-to-Q delay (Tco)</strong> is the propagation delay from the active clock edge arriving at the FF's CK pin to when the output Q stabilizes at the correct logic value. It is characterized in Liberty as a timing arc from CK to Q, dependent on clock slew and output load.<br><br>
+    <strong>For setup analysis (max):</strong> The STA tool uses the <strong>maximum Tco</strong> — pessimistic, data arrives as late as possible at the next stage.<br><br>
+    <strong>For hold analysis (min):</strong> The STA tool uses the <strong>minimum Tco</strong> — optimistic, data arrives as early as possible. If this minimum delay is still too fast for the capture FF's hold requirement, there's a hold violation.<br><br>
+    This is why Liberty cells have both <code class="code-inline">cell_rise/fall</code> (max) and <code class="code-inline">timing_type: min_value</code> arcs.</div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">Can Tco be 0? What would that imply?</span><div class="fu-ans">No — Tco cannot realistically be 0 (it takes some finite time to drive Q). In Liberty, a very small minimum Tco (e.g., 50ps) makes hold violations more likely. Designs with short paths and small minimum Tco are hold-critical. Some theoretical models assume Tco_min = 0 as worst case for hold analysis, which is conservative.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="medium" data-kw="latch flip-flop difference time borrowing level edge">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q21</span>
+  <span class="q-txt">What is the difference between a latch and a flip-flop in STA context? What is time borrowing?</span>
+  <span class="q-badges"><span class="diff-badge medium">Medium</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>Flip-flop (edge-triggered):</strong> Captures data on a specific clock edge. Strictly one period of data path delay allowed. No time borrowing possible.<br><br>
+    <strong>Latch (level-sensitive):</strong> Transparent when clock is high (or low), stores when clock goes to opposite level. When transparent, data propagates through continuously.<br><br>
+    <strong>Time borrowing:</strong> In a latch-based pipeline, a stage that is slightly slow can "borrow" time from the next open latch window. If a signal arrives late at a latch, it can propagate through while the latch is still transparent (borrowing from the next cycle). This distributes slack across pipeline stages. Latch-based designs can be more timing-efficient but are harder to analyze and verify.<br><br>
+    STA tools handle latches with special timing analysis accounting for the open window and borrowed time.</div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">Is time borrowing always safe?</span><div class="fu-ans">No. There's a maximum borrow limit — you can't borrow more than the latch open window duration. If total borrowed time exceeds the window, the pipeline stalls or corrupts data. Also, time borrowing can make hold analysis more complex since the window when hold is checked depends on when data actually arrives.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="easy" data-kw="setup hold frequency clock period relationship">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q22</span>
+  <span class="q-txt">A 2GHz clock has a period of 0.5ns. How does this constrain your combinational logic budget?</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text">With a 0.5ns period, the setup timing equation gives:</div>
+    <div class="formula-box">Available logic time ≈ T_period + Skew − Tco_max − Tsu − T_uncertainty
+
+Typical numbers at 7nm:
+  T_period    = 0.5 ns
+  Tco_max     ≈ 0.05–0.10 ns
+  Tsu         ≈ 0.03–0.06 ns
+  Uncertainty ≈ 0.05–0.10 ns
+  Net routing ≈ variable
+
+→ Logic budget ≈ 0.5 - 0.10 - 0.05 - 0.10 ≈ 0.25 ns
+→ Roughly 4–6 FO4 gate delays at 7nm</div>
+    <div class="ans-text" style="margin-top:8px;">This is extremely tight — requires 2–3 gate logic depth max. High-performance microprocessors at these speeds use aggressive pipelining, custom cells, and extensive floorplanning.</div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">What is FO4 (Fan-Out-of-4) delay and why is it used as a metric?</span><div class="fu-ans">FO4 is the delay of an inverter driving 4 copies of itself — a technology-independent unit of logic delay. It scales with process node (roughly 10–15ps at 7nm, ~40–50ps at 65nm). It's used to compare logic depth across different technologies and gives a sense of "how many gate delays fit in one clock cycle."</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="medium" data-kw="report_timing_summary report_qor quality results difference">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q23</span>
+  <span class="q-txt">What's the difference between report_timing, report_timing_summary, and report_qor in PrimeTime?</span>
+  <span class="q-badges"><span class="diff-badge medium">Medium</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>report_timing:</strong> Full detailed path report. Shows cell-by-cell trace with delays, slews, arrival times. Use when debugging a specific violation. Command: <code class="code-inline">report_timing -path_type full -delay_type max -max_paths 10</code><br><br>
+    <strong>report_timing_summary:</strong> Concise table showing WNS, TNS, and failing endpoint count per path group. Use for quick project status. Command: <code class="code-inline">report_timing_summary</code><br><br>
+    <strong>report_qor (Quality of Results):</strong> High-level summary of timing, design rules, area, and optimization status across all path groups and scenarios. Includes DRC summary. Most useful for daily sign-off tracking. Command: <code class="code-inline">report_qor</code></div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">How do you filter report_timing to show only negative slack paths?</span><div class="fu-ans">report_timing -slack_lesser_than 0 -delay_type max -max_paths 9999 — this reports all paths with slack less than 0 (violating paths only). Combine with -path_type summary for a condensed view of all failures.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="medium" data-kw="recovery removal asynchronous check async reset set">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q24</span>
+  <span class="q-txt">What are recovery and removal timing checks?</span>
+  <span class="q-badges"><span class="diff-badge medium">Medium</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text">These checks apply to <strong>asynchronous control pins</strong> (async reset RN, async set SN, async enable):<br><br>
+    <strong>Recovery time:</strong> Minimum time the asynchronous control signal (e.g., async reset) must be <strong>de-asserted (released) BEFORE</strong> the next active clock edge. Analogous to setup time but for async pins. Ensures the FF is fully out of reset state before the next data capture.<br><br>
+    <strong>Removal time:</strong> Minimum time the asynchronous control signal must remain asserted <strong>AFTER</strong> the active clock edge before being de-asserted. Analogous to hold time for async pins. Ensures the async function fully takes effect before being removed.<br><br>
+    Violations cause metastability just like setup/hold violations. These are checked in STA by default if the library characterizes them.</div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">How do you ensure recovery/removal checks pass for an async reset?</span><div class="fu-ans">Options: (1) Set_false_path if reset is never de-asserted close to a clock edge (true async reset, never deasserted during normal operation). (2) If recovery matters, constrain the reset de-assertion path as a real timing path. (3) Use a reset synchronizer to de-assert reset synchronously.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="basics" data-diff="medium" data-kw="half cycle path DDR negative-edge double-data-rate">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q25</span>
+  <span class="q-txt">What is a half-cycle path? Where does it commonly appear?</span>
+  <span class="q-badges"><span class="diff-badge medium">Medium</span><span class="cat-badge-sm cat-basics">Basics</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text">A <strong>half-cycle path</strong> is a timing path where data is launched on one clock edge (e.g., rising) and captured on the opposite clock edge (e.g., falling) of the same clock. The available setup window is only <strong>half a clock period</strong> instead of a full period.<br><br>
+    <strong>Setup equation for half-cycle path:</strong></div>
+    <div class="formula-box">Available time = T_period / 2 + Skew − Tco − Tsu − uncertainty</div>
+    <div class="ans-text" style="margin-top:8px;"><strong>Where half-cycle paths appear:</strong><br>
+    — DDR interfaces (data valid on both edges)<br>
+    — Mixed positive/negative edge-triggered domains<br>
+    — Latch-to-FF or FF-to-latch paths<br>
+    — Deliberately pipelined designs with 2-phase clocking<br><br>
+    These paths are inherently more difficult to close and require aggressive optimization.</div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">How does the tool identify a half-cycle path vs a full-cycle path?</span><div class="fu-ans">The tool examines the launch edge and capture edge waveforms. If the launch is on the rising edge and capture is on the falling edge of the same clock (period 1.0ns), the available window is 0.5ns. The tool identifies this from the clock waveform definition in create_clock -waveform {0 0.5} — the falling edge is at 0.5ns.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+</div><!-- end basics grid -->
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 2 — CLOCKS
+══════════════════════════════════════════════════════════════ -->
+<div class="sec-hd" data-sec="clock">
+  <h2 style="color:var(--c-clock)">Clock Concepts &amp; Commands</h2>
+  <span class="sec-cnt" style="background:var(--c-clock-bg);border:1px solid var(--c-clock-bd);color:var(--c-clock)">25 questions</span>
+</div>
+<div class="q-grid">
+
+<div class="qc" data-cat="clock" data-diff="easy" data-kw="create_clock period waveform port syntax 1GHz 500MHz">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q26</span>
+  <span class="q-txt">Write the create_clock command for a 1GHz clock with 40% duty cycle on port CLK.</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="code-block"><span class="cmt"># 1GHz = 1.0ns period. 40% duty cycle: high for 0.4ns, low for 0.6ns</span>
+<span class="kw">create_clock</span> <span class="flg">-name</span> <span class="str">CLK_CORE</span> <span class="flg">-period</span> <span class="num">1.0</span> <span class="flg">-waveform</span> {<span class="num">0 0.4</span>} [<span class="kw">get_ports</span> <span class="str">CLK</span>]
+
+<span class="cmt"># -waveform {rise_time fall_time}: rising edge at 0ns, falling at 0.4ns</span>
+<span class="cmt"># Default (50%):  -waveform {0 0.5}  or just -period 1.0</span>
+<span class="cmt"># 500MHz 50%:     create_clock -name CLK -period 2.0 [get_ports CLK]</span></div>
+  </div>
+  <div class="short-box"><div class="block-lbl">Short Answer</div>-waveform {0 0.4} means rise at t=0, fall at t=0.4ns for a 1.0ns period clock (40% duty cycle).</div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">What does -add flag do in create_clock?</span><div class="fu-ans">-add appends a second clock to the same source pin without overwriting the first. Used when a single port legitimately carries two clocks (e.g., a test clock and a functional clock on the same physical pin). Without -add, the second create_clock overwrites the first. Use with -master_clock when multiple clocks share a pin and created_generated_clock needs to know which master to use.</div></li>
+      <li onclick="togFU(this)"><span class="fu-q">What happens if you don't add set_clock_latency or set_clock_uncertainty after create_clock?</span><div class="fu-ans">The clock is ideal — zero source latency, zero network latency, zero uncertainty, zero slew. All paths will have over-optimistic timing. Pre-CTS STA without latency/uncertainty is not representative of real-silicon behavior. Always add these immediately after create_clock in a pre-CTS SDC.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="medium" data-kw="create_generated_clock PLL divide multiply source">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q27</span>
+  <span class="q-txt">How do you define a PLL output clock that multiplies a 100MHz input by 10x?</span>
+  <span class="q-badges"><span class="diff-badge medium">Medium</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="code-block"><span class="cmt"># Master clock on PLL input</span>
+<span class="kw">create_clock</span> <span class="flg">-name</span> <span class="str">CLK_REF</span> <span class="flg">-period</span> <span class="num">10.0</span> [<span class="kw">get_ports</span> <span class="str">CLK_REF</span>]
+
+<span class="cmt"># PLL output: 100MHz × 10 = 1GHz (period = 1.0ns)</span>
+<span class="kw">create_generated_clock</span> \
+  <span class="flg">-name</span>       <span class="str">CLK_PLL_1G</span> \
+  <span class="flg">-source</span>     [<span class="kw">get_pins</span> <span class="str">PLL_INST/CLKIN</span>] \
+  <span class="flg">-multiply_by</span> <span class="num">10</span> \
+  [<span class="kw">get_pins</span> <span class="str">PLL_INST/CLKOUT</span>]
+
+<span class="cmt"># Model PLL internal latency (phase offset from PLL circuit)</span>
+<span class="kw">set_clock_latency</span> <span class="flg">-source</span> <span class="num">0.5</span> [<span class="kw">get_clocks</span> <span class="str">CLK_PLL_1G</span>]</div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">What happens if you forget -master_clock when two clocks arrive at PLL/CLKIN?</span><div class="fu-ans">The tool picks one master arbitrarily. If the wrong master is selected, the generated clock will have an incorrect period/phase relationship, leading to either over-optimistic or over-pessimistic inter-clock timing checks. Always specify -master_clock CLK_REF explicitly when multiple clocks can reach the source pin.</div></li>
+      <li onclick="togFU(this)"><span class="fu-q">When is a generated clock still ideal (not propagated)?</span><div class="fu-ans">By default, generated clocks are ideal unless set_propagated_clock is applied. Post-CTS, you must run set_propagated_clock [all_clocks] to switch all clocks (including generated) to use actual clock tree delays. Forgetting this leaves generated clocks with zero internal skew, hiding real timing issues.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="medium" data-kw="set_clock_latency source network insertion delay pre-CTS">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q28</span>
+  <span class="q-txt">Explain the difference between source latency and network latency in set_clock_latency.</span>
+  <span class="q-badges"><span class="diff-badge medium">Medium</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>Source latency</strong> (<code class="code-inline">-source</code> flag): Delay from the actual clock origin (oscillator, PLL) to the clock <strong>definition point</strong> in your SDC (the port/pin where you placed create_clock). Models: board PCB trace delay, off-chip driver delay, connector delay, clock buffer chain before the chip.<br><br>
+    <strong>Network latency</strong> (no flag): Delay from the clock definition point (create_clock source) to the flip-flop's clock pin through the <strong>internal chip clock tree</strong>.<br><br>
+    <strong>Post-CTS behavior:</strong> After CTS, <code class="code-inline">set_propagated_clock</code> replaces network latency with actual propagated delays. Source latency should remain because the board delay hasn't changed.</div>
+    <div class="code-block"><span class="cmt"># 0.3ns board trace + connector to chip CLK pin</span>
+<span class="kw">set_clock_latency</span> <span class="flg">-source</span> <span class="num">0.3</span> [<span class="kw">get_clocks</span> <span class="str">CLK_SYS</span>]
+
+<span class="cmt"># 0.6ns estimated internal clock tree (used pre-CTS only)</span>
+<span class="kw">set_clock_latency</span> <span class="num">0.6</span> [<span class="kw">get_clocks</span> <span class="str">CLK_SYS</span>]</div>
+  </div>
+  <div class="warn-box">⚠ Senior Note: Forgetting source latency makes timing optimistic. Missing it means the tool doesn't account for the board delay in inter-chip timing calculations, making I/O constraints incorrect.</div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="medium" data-kw="set_clock_uncertainty setup hold jitter OCV guardband">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q29</span>
+  <span class="q-txt">What does set_clock_uncertainty model and what values are typical?</span>
+  <span class="q-badges"><span class="diff-badge medium">Medium</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><code class="code-inline">set_clock_uncertainty</code> is a lump-sum margin that accounts for three things:<br><br>
+    1. <strong>Clock jitter:</strong> Cycle-to-cycle PLL output variation (typically 50–150ps peak-to-peak at modern nodes)<br>
+    2. <strong>Pre-CTS clock tree uncertainty:</strong> Expected post-CTS clock skew (replaced by actual skew after CTS)<br>
+    3. <strong>Guardband:</strong> Extra margin for extraction inaccuracy, OCV not captured elsewhere<br><br>
+    <strong>Typical values:</strong></div>
+    <div class="code-block"><span class="cmt"># Pre-CTS: uncertainty includes both jitter + expected skew budget</span>
+<span class="kw">set_clock_uncertainty</span> <span class="flg">-setup</span> <span class="num">0.250</span> [<span class="kw">get_clocks</span> <span class="str">CLK_SYS</span>]   <span class="cmt"># 250ps</span>
+<span class="kw">set_clock_uncertainty</span> <span class="flg">-hold</span>  <span class="num">0.100</span> [<span class="kw">get_clocks</span> <span class="str">CLK_SYS</span>]   <span class="cmt"># 100ps</span>
+
+<span class="cmt"># Post-CTS: uncertainty is just jitter (skew is now real)</span>
+<span class="kw">set_clock_uncertainty</span> <span class="flg">-setup</span> <span class="num">0.100</span> [<span class="kw">get_clocks</span> <span class="str">CLK_SYS</span>]
+<span class="kw">set_clock_uncertainty</span> <span class="flg">-hold</span>  <span class="num">0.050</span> [<span class="kw">get_clocks</span> <span class="str">CLK_SYS</span>]</div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">How does uncertainty interact with CPPR?</span><div class="fu-ans">Clock uncertainty is applied globally to every path. CPPR (Clock Path Pessimism Removal) only removes double-derating on the common clock path segment — it does NOT remove uncertainty. Uncertainty always reduces effective timing margin. Only CRPR/CPPR removes structural pessimism from OCV derating on shared path segments.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="medium" data-kw="set_propagated_clock post-CTS ideal propagated actual">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q30</span>
+  <span class="q-txt">What happens if you forget to run set_propagated_clock after CTS?</span>
+  <span class="q-badges"><span class="diff-badge medium">Medium</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text">Without <code class="code-inline">set_propagated_clock</code>, the tool continues using the pre-CTS ideal (lumped) clock latency values from <code class="code-inline">set_clock_latency</code>, ignoring the actual routed clock tree delays.<br><br>
+    <strong>Consequences:</strong><br>
+    — <strong>Clock skew is hidden</strong> — all FFs appear to have the same clock arrival time (equal latency), giving false zero-skew analysis<br>
+    — <strong>Setup slack is artificially optimistic</strong> — real negative skew paths appear to have no penalty<br>
+    — <strong>Hold violations are missed</strong> — real negative skew in the capture path (where capture arrives late and launch is early) is invisible<br>
+    — <strong>Sign-off is invalid</strong> — the analysis doesn't represent silicon behavior</div>
+  </div>
+  <div class="short-box"><div class="block-lbl">Short Answer</div>Clocks remain ideal post-CTS → zero skew illusion → optimistic timing → missed violations → silicon failures.</div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="medium" data-kw="set_clock_groups asynchronous logically exclusive physically exclusive mux CDC">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q31</span>
+  <span class="q-txt">When do you use set_clock_groups -asynchronous vs -logically_exclusive vs -physically_exclusive?</span>
+  <span class="q-badges"><span class="diff-badge medium">Medium</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>-asynchronous:</strong> The two clock groups have no phase relationship (different sources). Paths between groups are NOT timed. Used for true CDC between clocks from different PLLs, oscillators, or sources. Most common option.<br><br>
+    <strong>-logically_exclusive:</strong> Clocks can't be active simultaneously (e.g., mux-selected clocks where only one is active at a time). Paths are NOT timed. However, clock tree buffers can be shared in synthesis/CTS because only one is ever active.<br><br>
+    <strong>-physically_exclusive:</strong> Clocks never coexist even in the physical sense — no shared buffers. Stronger than logically_exclusive. Used for clocks that drive completely separate sub-designs that are never assembled together.</div>
+    <div class="code-block"><span class="cmt"># True asynchronous domains</span>
+<span class="kw">set_clock_groups</span> <span class="flg">-asynchronous</span> \
+  <span class="flg">-group</span> [<span class="kw">get_clocks</span> <span class="str">CLK_CORE</span>] \
+  <span class="flg">-group</span> [<span class="kw">get_clocks</span> {CLK_USB CLK_PCIe}]
+
+<span class="cmt"># Mux-selected test/functional clocks</span>
+<span class="kw">set_clock_groups</span> <span class="flg">-logically_exclusive</span> \
+  <span class="flg">-group</span> [<span class="kw">get_clocks</span> <span class="str">CLK_FUNC</span>] \
+  <span class="flg">-group</span> [<span class="kw">get_clocks</span> <span class="str">CLK_SCAN</span>]</div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">How is set_clock_groups -asynchronous different from set_false_path -from clk_a -to clk_b?</span><div class="fu-ans">Functionally similar — both suppress timing analysis. Key differences: set_clock_groups is bidirectional by default, named (removable by name), cleaner at scale. set_false_path gives more granularity (-through, -rise, -fall, per-direction). Preference: use set_clock_groups for domain-level CDC; use set_false_path for specific path-level exceptions within the same domain.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="medium" data-kw="CPPR CRPR clock reconvergence pessimism removal common path">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q32</span>
+  <span class="q-txt">What is CPPR/CRPR and why is it important with OCV enabled?</span>
+  <span class="q-badges"><span class="diff-badge hard">Hard</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>CPPR (Clock Path Pessimism Removal)</strong>, also called CRPR, addresses a specific form of OCV over-pessimism:<br><br>
+    When launch and capture flip-flops share a <strong>common clock path segment</strong> (same buffers up to some divergence point), OCV derating applies:<br>
+    — To the common segment as seen through the launch path: <strong>late derate (1.05)</strong><br>
+    — To the same common segment as seen through the capture path: <strong>early derate (0.95)</strong><br><br>
+    But those are the <strong>same physical cells with one real delay</strong> — they can't simultaneously be 5% slower and 5% faster. This is double pessimism.<br><br>
+    <strong>CPPR correction:</strong></div>
+    <div class="formula-box">CPPR credit = (Late derated common path delay) - (Early derated common path delay)
+              = common_path_delay × (late_factor - early_factor)
+              = 0.5ns × (1.05 - 0.95) = 0.05ns
+
+This 0.05ns is ADDED BACK to setup slack.</div>
+    <div class="ans-text" style="margin-top:8px;">Most STA tools apply CPPR automatically when OCV is enabled. Without it, slack is over-pessimistic by 0.05–0.3ns depending on common path length.</div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">How do you verify CPPR is being applied in PrimeTime?</span><div class="fu-ans">In report_timing -path_type full, look for a "clock reconvergence pessimism removal" line with a positive credit value near the bottom of the timing report. Also check: report_timing -path_type full_clock shows where launch and capture paths diverge. set_app_var timing_crpr_enable true enables CPPR in PT (it may be default ON).</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="medium" data-kw="set_clock_transition pre-CTS slew ideal clock transition">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q33</span>
+  <span class="q-txt">What is set_clock_transition and when should it be used?</span>
+  <span class="q-badges"><span class="diff-badge medium">Medium</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><code class="code-inline">set_clock_transition</code> specifies the rise/fall slew rate at clock pins for <strong>ideal (non-propagated) clocks</strong>. Used exclusively pre-CTS when real clock tree buffer slews are unknown.<br><br>
+    Without this, ideal clocks have zero slew — unrealistically fast. The flip-flop timing tables are sensitive to clock input slew, so a realistic slew estimate is needed for accurate pre-CTS Tsu, Th, and Tco lookups.<br><br>
+    <strong>Post-CTS:</strong> Becomes irrelevant once <code class="code-inline">set_propagated_clock</code> is applied — propagated delays include real slew values from actual clock buffers.</div>
+    <div class="code-block"><span class="kw">set_clock_transition</span> <span class="num">0.15</span> [<span class="kw">all_clocks</span>]                  <span class="cmt"># 150ps all clocks</span>
+<span class="kw">set_clock_transition</span> <span class="flg">-rise</span> <span class="num">0.12</span> <span class="flg">-fall</span> <span class="num">0.18</span> [<span class="kw">get_clocks</span> <span class="str">CLK_DDR</span>]</div>
+  </div>
+  <div class="warn-box">⚠ Too-optimistic slew (e.g., 0.05ns when real tree gives 0.20ns) under-estimates FF setup/hold times, creating a false timing closure pre-CTS that fails post-CTS.</warn-box>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="medium" data-kw="set_clock_sense stop_propagation positive negative clock gating">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q34</span>
+  <span class="q-txt">When and why would you use set_clock_sense -stop_propagation?</span>
+  <span class="q-badges"><span class="diff-badge medium">Medium</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><code class="code-inline">set_clock_sense -stop_propagation</code> tells the STA tool to terminate clock propagation at a specific pin — the clock does NOT pass beyond that point. Use cases:<br><br>
+    1. <strong>Test mux bypass:</strong> A test mux passes clock in test mode but should not propagate functional clock into the scan chain in functional analysis<br>
+    2. <strong>Clock gating cell where gate is always enabled:</strong> No need to propagate clock sense through an always-transparent clock gate<br>
+    3. <strong>Isolating unrelated logic</strong> that happens to sit on a clock network<br><br>
+    Without it, the tool might incorrectly propagate a clock through combinational logic that isn't a real clock path, creating spurious clock domains on data pins.</div>
+    <div class="code-block"><span class="kw">set_clock_sense</span> <span class="flg">-stop_propagation</span> <span class="flg">-clock</span> CLK_FUNC [<span class="kw">get_pins</span> <span class="str">SCAN_MUX/Y</span>]</div>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="hard" data-kw="clock mux logically exclusive generated combinational SDC">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q35</span>
+  <span class="q-txt">How do you properly constrain a glitch-free clock mux in SDC?</span>
+  <span class="q-badges"><span class="diff-badge hard">Hard</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="code-block"><span class="cmt"># Two input clocks to a 2:1 mux. SEL selects which clock is active.</span>
+<span class="kw">create_clock</span> <span class="flg">-name</span> <span class="str">CLK_FAST</span> <span class="flg">-period</span> <span class="num">1.0</span>  [<span class="kw">get_ports</span> <span class="str">CLK_FAST</span>]
+<span class="kw">create_clock</span> <span class="flg">-name</span> <span class="str">CLK_SLOW</span> <span class="flg">-period</span> <span class="num">10.0</span> [<span class="kw">get_ports</span> <span class="str">CLK_SLOW</span>]
+
+<span class="cmt"># Generated clocks on mux output for each selection</span>
+<span class="kw">create_generated_clock</span> <span class="flg">-name</span> <span class="str">CLK_OUT_FAST</span> \
+  <span class="flg">-source</span> [<span class="kw">get_ports</span> <span class="str">CLK_FAST</span>] <span class="flg">-combinational</span> \
+  [<span class="kw">get_pins</span> <span class="str">CLK_MUX/Y</span>]
+
+<span class="kw">create_generated_clock</span> <span class="flg">-name</span> <span class="str">CLK_OUT_SLOW</span> \
+  <span class="flg">-source</span> [<span class="kw">get_ports</span> <span class="str">CLK_SLOW</span>] <span class="flg">-combinational</span> <span class="flg">-add</span> \
+  [<span class="kw">get_pins</span> <span class="str">CLK_MUX/Y</span>]
+
+<span class="cmt"># Only one can be active at a time</span>
+<span class="kw">set_clock_groups</span> <span class="flg">-logically_exclusive</span> \
+  <span class="flg">-group</span> [<span class="kw">get_clocks</span> <span class="str">CLK_OUT_FAST</span>] \
+  <span class="flg">-group</span> [<span class="kw">get_clocks</span> <span class="str">CLK_OUT_SLOW</span>]</div>
+  </div>
+  <div class="warn-box">⚠ Without -combinational, the tool treats the mux output as an unrelated new clock with no master relationship. Without -logically_exclusive, the tool tries to time paths crossing between CLK_OUT_FAST and CLK_OUT_SLOW — creating phantom violations.</warn-box>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="hard" data-kw="useful skew intentional CTS setup hold tradeoff">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q36</span>
+  <span class="q-txt">What is useful skew? What are its benefits and risks?</span>
+  <span class="q-badges"><span class="diff-badge hard">Hard</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>Useful skew</strong> is intentional clock skew inserted during CTS to improve timing margins. Unlike unwanted skew (a side effect of unbalanced trees), useful skew is a deliberate optimization technique:<br><br>
+    <strong>How it works:</strong> For a setup-critical reg2reg path, <strong>delay the capture FF's clock</strong> (positive skew). Available setup time = T_period + skew. If skew = 0.1ns, it's like adding 100ps to the clock period just for that path.<br><br>
+    <strong>Benefits:</strong><br>
+    — Fixes setup violations without changing the logic<br>
+    — No area impact (just clock routing change)<br>
+    — Can improve many paths simultaneously if clock domain is skewed uniformly<br><br>
+    <strong>Risks:</strong><br>
+    — Positive skew degrades hold: capture clock later → data must arrive later → path needs more hold margin<br>
+    — Can create hold violations on nearby paths<br>
+    — Skew is fixed in the implementation — inflexible for future ECOs<br>
+    — Needs careful management to avoid "skew storms" where fixing one path cascades to new hold violations</div>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="hard" data-kw="clock gating check ICG enable setup hold glitch propagate">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q37</span>
+  <span class="q-txt">What is a clock gating check and what does a violation mean in silicon?</span>
+  <span class="q-badges"><span class="diff-badge hard">Hard</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text">A clock gating check verifies that the <strong>enable signal</strong> of an Integrated Clock Gate (ICG) cell is stable during the clock's active window:<br><br>
+    <strong>Setup (gating check):</strong> The EN signal must be stable before the clock's evaluation edge (typically the rising edge when clock is high-active). If EN is still changing when the gate window opens, a glitch can propagate to the gated clock output.<br><br>
+    <strong>Hold (gating check):</strong> EN must remain stable after the clock edge to ensure a clean gate.<br><br>
+    <strong>Silicon impact of violation:</strong> A glitch on the gated clock can cause:<br>
+    — Spurious clock pulses → flip-flops capture wrong data<br>
+    — Clock tree DRC issues (too-narrow pulse)<br>
+    — Power glitches and noise<br>
+    — These are extremely hard to debug in silicon<br><br>
+    The check is separate from data path setup/hold — it's a dedicated timing check type in the tool. Library ICG cells have built-in characterization for this check.</div>
+  </div>
+  <div class="code-block"><span class="cmt"># Override clock gating check timing when library values need adjustment</span>
+<span class="kw">set_clock_gating_check</span> <span class="flg">-setup</span> <span class="num">0.2</span> <span class="flg">-hold</span> <span class="num">0.1</span>
+<span class="kw">set_clock_gating_check</span> <span class="flg">-setup</span> <span class="num">0.3</span> [<span class="kw">get_cells</span> <span class="str">PD_A/ICG_*</span>]  <span class="cmt"># per domain</span></div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="hard" data-kw="create_generated_clock edges edge_shift div-by-3 fractional">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q38</span>
+  <span class="q-txt">How do you use -edges in create_generated_clock? Give a divide-by-3 example.</span>
+  <span class="q-badges"><span class="diff-badge hard">Hard</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><code class="code-inline">-edges {e1 e2 e3}</code> maps master clock edges (numbered from 1 = first rising) to generated clock edges (rising, falling, next rising). This gives direct control over non-standard divisions.</div>
+    <div class="code-block"><span class="cmt"># Master clock edges: 1=rise(0ns), 2=fall(0.5ns), 3=rise(1.0ns), 4=fall(1.5ns), 5=rise(2.0ns)...</span>
+<span class="cmt"># Divide-by-3: generated rises at master edge 1 (0ns)</span>
+<span class="cmt">#              falls at master edge 3 (1.0ns - not 50% duty)</span>
+<span class="cmt">#              next rise at master edge 5 (2.0ns → period = 3×master = 3.0ns)</span>
+
+<span class="kw">create_generated_clock</span> <span class="flg">-name</span> <span class="str">CLK_DIV3</span> \
+  <span class="flg">-source</span> [<span class="kw">get_ports</span> <span class="str">CLK</span>] \
+  <span class="flg">-edges</span> {<span class="num">1 3 5</span>} \
+  [<span class="kw">get_pins</span> <span class="str">DIV3_CELL/Q</span>]
+
+<span class="cmt"># -edge_shift {t1 t2 t3} shifts each edge by ti nanoseconds
+# Useful for PLL with known phase offset:</span>
+<span class="kw">create_generated_clock</span> <span class="flg">-name</span> <span class="str">CLK_PHASE90</span> \
+  <span class="flg">-source</span> [<span class="kw">get_ports</span> <span class="str">CLK</span>] \
+  <span class="flg">-edges</span> {<span class="num">1 2 3</span>} \
+  <span class="flg">-edge_shift</span> {<span class="num">0.25 0.25 0.25</span>} \   <span class="cmt"># 90° phase shift = 0.25ns at 1GHz</span>
+  [<span class="kw">get_pins</span> <span class="str">PLL/CLKOUT90</span>]</div>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="hard" data-kw="pulse width check minimum clock width failure CTS">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q39</span>
+  <span class="q-txt">What is a pulse width check and when does it commonly fail?</span>
+  <span class="q-badges"><span class="diff-badge hard">Hard</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text">A <strong>pulse width check</strong> verifies that the clock's high and low duration each meet the minimum required values from the Liberty library (<code class="code-inline">min_pulse_width_high</code> and <code class="code-inline">min_pulse_width_low</code> per cell).<br><br>
+    <strong>Common failure scenarios:</strong><br>
+    1. <strong>Non-50% duty cycle clocks after clock gating:</strong> ICG cells can skew the output duty cycle, narrowing pulses<br>
+    2. <strong>Clock dividers with non-symmetric output</strong> (e.g., div-by-3 without 50% duty)<br>
+    3. <strong>After large clock tree delays:</strong> Clock path inversion or mismatch can narrow pulses at leaf nodes<br>
+    4. <strong>At advanced corners (ff, high Vdd):</strong> Clock buffers are faster, transition time is shorter relative to period<br>
+    5. <strong>Multi-phase clocking</strong> with aggressive phase offsets<br><br>
+    <strong>Fix:</strong> Add clock buffers to restore slew, adjust duty cycle correction circuit, restructure the gating logic, or use a duty cycle corrector (DCC) in the clock tree.</div>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="hard" data-kw="inter-clock uncertainty from to crossing setup hold CDC">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q40</span>
+  <span class="q-txt">How do you model different clock uncertainty for inter-clock (CDC) paths?</span>
+  <span class="q-badges"><span class="diff-badge hard">Hard</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="code-block"><span class="cmt"># Intra-clock uncertainty (paths within same clock domain)</span>
+<span class="kw">set_clock_uncertainty</span> <span class="flg">-setup</span> <span class="num">0.15</span> [<span class="kw">get_clocks</span> <span class="str">CLK_A</span>]
+<span class="kw">set_clock_uncertainty</span> <span class="flg">-setup</span> <span class="num">0.15</span> [<span class="kw">get_clocks</span> <span class="str">CLK_B</span>]
+
+<span class="cmt"># Inter-clock uncertainty (paths from CLK_A domain to CLK_B domain)</span>
+<span class="cmt"># Higher uncertainty because two independent PLLs with uncorrelated jitter</span>
+<span class="kw">set_clock_uncertainty</span> \
+  <span class="flg">-from</span> [<span class="kw">get_clocks</span> <span class="str">CLK_A</span>] \
+  <span class="flg">-to</span>   [<span class="kw">get_clocks</span> <span class="str">CLK_B</span>] \
+  <span class="num">0.40</span>
+
+<span class="cmt"># Edge-specific: only rising-to-rising crossing for DDR</span>
+<span class="kw">set_clock_uncertainty</span> \
+  <span class="flg">-rise_from</span> [<span class="kw">get_clocks</span> <span class="str">CLK_DDR</span>] \
+  <span class="flg">-fall_to</span>   [<span class="kw">get_clocks</span> <span class="str">CLK_DDR</span>] \
+  <span class="num">0.10</span></div>
+    <div class="ans-text" style="margin-top:8px;">Inter-clock uncertainty accounts for the fact that two independently-generated clocks have uncorrelated jitter — their relative phase uncertainty is the sum of individual jitters (worst case), not just one clock's jitter.</div>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="medium" data-kw="clock divider generate div-2 flip-flop based SDC">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q41</span>
+  <span class="q-txt">Write the complete SDC for a flip-flop based div-by-2 clock divider.</span>
+  <span class="q-badges"><span class="diff-badge medium">Medium</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="code-block"><span class="cmt"># Master clock at chip input</span>
+<span class="kw">create_clock</span> <span class="flg">-name</span> <span class="str">CLK_IN</span> <span class="flg">-period</span> <span class="num">2.0</span> [<span class="kw">get_ports</span> <span class="str">CLK</span>]
+
+<span class="cmt"># Flip-flop based divider: FF output Q toggles every cycle
+# -source should be the FF's CLOCK PIN (CK), not Q
+# The generated clock at Q has period = 2 × master = 4.0ns</span>
+<span class="kw">create_generated_clock</span> <span class="flg">-name</span> <span class="str">CLK_DIV2</span> \
+  <span class="flg">-source</span>    [<span class="kw">get_pins</span> <span class="str">U_DIV/CK</span>]  <span class="cmt"># source = FF's CK pin</span>
+  <span class="flg">-divide_by</span>  <span class="num">2</span> \
+  [<span class="kw">get_pins</span> <span class="str">U_DIV/Q</span>]              <span class="cmt"># generated clock on Q output</span>
+
+<span class="cmt"># Common mistake: using -source [get_ports CLK] or [get_pins U_DIV/D]
+# Correct: source is where master clock arrives at the divider cell = CK pin</span></div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">Can you use -divide_by 2 instead of -edges {1 3 5} for the same result?</span><div class="fu-ans">For a 50% duty cycle div-by-2: both are equivalent. -divide_by 2 generates {rise@0, fall@T_master, next_rise@2×T_master}. -edges {1 3 5} does the same edge mapping. Use -divide_by for clean integer divisions. Use -edges when the duty cycle isn't 50% or for more complex relationships.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="expert" data-kw="pre-CTS post-CTS STA difference strategy closure">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q42</span>
+  <span class="q-txt">What is different about STA strategy pre-CTS vs post-CTS? What changes in the SDC?</span>
+  <span class="q-badges"><span class="diff-badge expert">Expert</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>Pre-CTS STA:</strong><br>
+    — Clocks are ideal (no physical tree yet)<br>
+    — Use <code class="code-inline">set_clock_latency</code> (network + source), <code class="code-inline">set_clock_transition</code>, <code class="code-inline">set_clock_uncertainty</code> (includes skew budget)<br>
+    — OCV applied only to data paths (or with reduced clock derating)<br>
+    — Goal: ensure logic is synthesized to meet timing under expected post-CTS conditions<br>
+    — Higher uncertainty margin needed to budget for unknown real clock skew<br><br>
+    <strong>Post-CTS STA:</strong><br>
+    — Replace <code class="code-inline">set_clock_latency</code> (network) with <code class="code-inline">set_propagated_clock [all_clocks]</code><br>
+    — Reduce <code class="code-inline">set_clock_uncertainty</code> to jitter only (skew is now real, not guessed)<br>
+    — Apply full OCV to both clock and data paths<br>
+    — CPPR enabled automatically<br>
+    — Source latency retained<br>
+    — This is the mode for sign-off<br><br>
+    <strong>SDC typically has two versions:</strong> a pre-CTS version (with latency/uncertainty) and a post-CTS version (with propagated clock). Synthesis uses pre-CTS SDC; final PnR sign-off uses post-CTS SDC.</div>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="hard" data-kw="multiple clocks same source port -add create_clock">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q43</span>
+  <span class="q-txt">A test clock and functional clock share the same physical port. How do you handle this in SDC?</span>
+  <span class="q-badges"><span class="diff-badge hard">Hard</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="code-block"><span class="cmt"># Both clocks arrive at the same CLK port (mux-selected at pad level)</span>
+<span class="kw">create_clock</span> <span class="flg">-name</span> <span class="str">CLK_FUNC</span> <span class="flg">-period</span>  <span class="num">1.0</span> [<span class="kw">get_ports</span> <span class="str">CLK</span>]
+<span class="kw">create_clock</span> <span class="flg">-name</span> <span class="str">CLK_TEST</span> <span class="flg">-period</span> <span class="num">10.0</span> <span class="flg">-add</span> [<span class="kw">get_ports</span> <span class="str">CLK</span>]
+
+<span class="cmt"># -add ensures CLK_FUNC is not overwritten by CLK_TEST definition</span>
+
+<span class="cmt"># In functional mode: CLK_TEST is inactive</span>
+<span class="kw">set_clock_groups</span> <span class="flg">-logically_exclusive</span> \
+  <span class="flg">-group</span> [<span class="kw">get_clocks</span> <span class="str">CLK_FUNC</span>] \
+  <span class="flg">-group</span> [<span class="kw">get_clocks</span> <span class="str">CLK_TEST</span>]
+
+<span class="cmt"># OR use case analysis per mode:</span>
+<span class="cmt"># Functional SDC: set_case_analysis 0 [get_ports TEST_MODE]</span>
+<span class="cmt"># Scan SDC:       set_case_analysis 1 [get_ports TEST_MODE]</span></div>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="hard" data-kw="clock reconvergence reconvergent fanout timing analysis ATIS">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q44</span>
+  <span class="q-txt">What is clock reconvergence (not CPPR) in the data path and how does it affect STA accuracy?</span>
+  <span class="q-badges"><span class="diff-badge expert">Expert</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text">Reconvergent fanout in the DATA path occurs when a signal splits into two branches and the branches re-merge at a logic gate downstream. STA handles each branch independently and takes the worst case at the merge point.<br><br>
+    <strong>The problem:</strong> The two branches from the same source are correlated — they both experience the SAME process variation and transition. STA, however, treats them independently, potentially applying opposing OCV derates (one late, one early), which is physically impossible for signals from the same source.<br><br>
+    <strong>Impact:</strong> This can be pessimistic (tool applies worst-case delay on both branches independently even when they can't both be worst-case simultaneously). Modern tools handle this with ATIS (Arrival Time with Independent Slews) or graph-based timing that tracks signal identity through reconvergence points.<br><br>
+    <strong>Practical impact:</strong> For most designs, this is a minor effect. For paths with significant reconvergent fanout and high OCV margins, it can add 10–50ps of false pessimism.</div>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="hard" data-kw="ideal clock vs propagated comparison all_clocks">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q45</span>
+  <span class="q-txt">A new engineer asks: "My design passes timing pre-CTS but fails post-CTS. Why?" Explain the reasons.</span>
+  <span class="q-badges"><span class="diff-badge hard">Hard</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text">Several real factors change between pre-CTS and post-CTS:<br><br>
+    1. <strong>Real clock skew appears:</strong> Pre-CTS used an estimated uniform latency. Post-CTS, real skew can be negative (capture arrives earlier than launch) → tightens setup; real positive skew creates hold violations.<br><br>
+    2. <strong>Uncertainty reduced but real skew larger than estimated:</strong> If the clock tree is poorly balanced, real skew > pre-CTS uncertainty budget → paths that seemed safe now fail.<br><br>
+    3. <strong>Clock tree insertion delay:</strong> Real clock buffers have actual delay. If the network latency estimate was too optimistic (too small), capture clock arrives later than expected for setup, reducing the data budget.<br><br>
+    4. <strong>Full OCV now applied to clock paths:</strong> Pre-CTS often had reduced or no clock path OCV. Post-CTS, full OCV on clock paths tightens margins further.<br><br>
+    5. <strong>New hold violations:</strong> Post-CTS, short paths that were fine with ideal clocks now show hold violations due to real clock tree mismatches.<br><br>
+    6. <strong>Clock slew changes from set_clock_transition:</strong> Real clock tree delivers different slew than estimated, changing Tsu/Th/Tco values.</div>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="medium" data-kw="clock tree synthesis CTS goals objectives balance H-tree fishbone">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q46</span>
+  <span class="q-txt">What are the primary goals of Clock Tree Synthesis (CTS)?</span>
+  <span class="q-badges"><span class="diff-badge medium">Medium</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text">Primary CTS goals (in priority order for most designs):<br><br>
+    1. <strong>Minimize clock skew:</strong> All FFs in a domain should see the clock at approximately the same time. Skew directly impacts timing margin.<br><br>
+    2. <strong>Meet insertion delay budget:</strong> Total latency from clock source to FF CK pins should stay within the allocated budget to preserve setup margin.<br><br>
+    3. <strong>Meet slew requirements:</strong> Clock signal at every CK pin must have slew within <code class="code-inline">set_max_transition -clock_path</code> limit.<br><br>
+    4. <strong>Minimize power:</strong> Clock network is often 30–40% of total dynamic power. Use low-power CTS (clock gating, hybrid trees, fewer buffers).<br><br>
+    5. <strong>Useful skew optimization</strong> (advanced): Introduce beneficial skew to fix timing without additional logic changes.<br><br>
+    6. <strong>DRC compliance:</strong> No max_cap/transition violations on any clock net.</div>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="hard" data-kw="DDR clock both edges rising falling set_input_delay -clock_fall -add_delay">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q47</span>
+  <span class="q-txt">Write the complete SDC for a DDR4 data bus (both edges) coming into a chip.</span>
+  <span class="q-badges"><span class="diff-badge hard">Hard</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="code-block"><span class="cmt"># DDR4: data sampled on both rising and falling clock edges</span>
+
+<span class="kw">create_clock</span> <span class="flg">-name</span> <span class="str">CLK_DDR</span> <span class="flg">-period</span> <span class="num">2.0</span> <span class="flg">-waveform</span> {<span class="num">0 1.0</span>} [<span class="kw">get_ports</span> <span class="str">DDR_CLK</span>]
+
+<span class="cmt"># Setup constraint for rising edge captured data</span>
+<span class="kw">set_input_delay</span> <span class="flg">-max</span> <span class="num">0.6</span> <span class="flg">-clock</span> CLK_DDR                   [<span class="kw">get_ports</span> <span class="str">DDR_DQ*</span>]
+<span class="cmt"># Setup constraint for falling edge captured data</span>
+<span class="kw">set_input_delay</span> <span class="flg">-max</span> <span class="num">0.6</span> <span class="flg">-clock</span> CLK_DDR <span class="flg">-clock_fall</span> <span class="flg">-add_delay</span> [<span class="kw">get_ports</span> <span class="str">DDR_DQ*</span>]
+
+<span class="cmt"># Hold constraint for rising edge (data must not change too fast)</span>
+<span class="kw">set_input_delay</span> <span class="flg">-min</span> <span class="num">0.1</span> <span class="flg">-clock</span> CLK_DDR                   [<span class="kw">get_ports</span> <span class="str">DDR_DQ*</span>]
+<span class="cmt"># Hold constraint for falling edge</span>
+<span class="kw">set_input_delay</span> <span class="flg">-min</span> <span class="num">0.1</span> <span class="flg">-clock</span> CLK_DDR <span class="flg">-clock_fall</span> <span class="flg">-add_delay</span> [<span class="kw">get_ports</span> <span class="str">DDR_DQ*</span>]
+
+<span class="cmt"># -add_delay is CRITICAL: without it, the second constraint overwrites the first!</span></div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">What happens if -add_delay is omitted on the second constraint?</span><div class="fu-ans">The falling-edge constraint silently overwrites the rising-edge constraint. The tool only analyzes falling-edge-captured paths. Rising-edge paths are unconstrained — check_timing will show missing input delays, but it's easy to miss in large designs. Always use -add_delay for any multi-edge port constraint.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="medium" data-kw="set_propagated_clock all_clocks syntax post-CTS SDC">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q48</span>
+  <span class="q-txt">Write the minimal post-CTS clock setup in SDC for 3 clocks (2 async + 1 generated).</span>
+  <span class="q-badges"><span class="diff-badge medium">Medium</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="code-block"><span class="cmt">## Post-CTS Clock SDC Template ##</span>
+
+<span class="cmt"># 1. Master clocks</span>
+<span class="kw">create_clock</span> <span class="flg">-name</span> <span class="str">CLK_SYS</span> <span class="flg">-period</span>  <span class="num">2.0</span>  [<span class="kw">get_ports</span> <span class="str">CLK_SYS</span>]
+<span class="kw">create_clock</span> <span class="flg">-name</span> <span class="str">CLK_USB</span> <span class="flg">-period</span> <span class="num">16.67</span> [<span class="kw">get_ports</span> <span class="str">CLK_USB</span>]  <span class="cmt"># 60MHz</span>
+
+<span class="cmt"># 2. Generated clock (PLL output, 4x multiplication of CLK_SYS)</span>
+<span class="kw">create_generated_clock</span> <span class="flg">-name</span> <span class="str">CLK_CORE</span> \
+  <span class="flg">-source</span> [<span class="kw">get_pins</span> <span class="str">PLL/CLKIN</span>] <span class="flg">-multiply_by</span> <span class="num">4</span> [<span class="kw">get_pins</span> <span class="str">PLL/CLKOUT</span>]
+
+<span class="cmt"># 3. Source latency (board delays — kept post-CTS)</span>
+<span class="kw">set_clock_latency</span> <span class="flg">-source</span> <span class="num">0.3</span> [<span class="kw">get_clocks</span> {CLK_SYS CLK_USB}]
+
+<span class="cmt"># 4. PROPAGATED CLOCKS — the key post-CTS step</span>
+<span class="kw">set_propagated_clock</span> [<span class="kw">all_clocks</span>]
+
+<span class="cmt"># 5. Post-CTS uncertainty = jitter only (skew is now real)</span>
+<span class="kw">set_clock_uncertainty</span> <span class="flg">-setup</span> <span class="num">0.10</span> [<span class="kw">all_clocks</span>]
+<span class="kw">set_clock_uncertainty</span> <span class="flg">-hold</span>  <span class="num">0.05</span> [<span class="kw">all_clocks</span>]
+
+<span class="cmt"># 6. Async domains — no CDC timing analysis</span>
+<span class="kw">set_clock_groups</span> <span class="flg">-asynchronous</span> \
+  <span class="flg">-group</span> [<span class="kw">get_clocks</span> {CLK_SYS CLK_CORE}] \
+  <span class="flg">-group</span> [<span class="kw">get_clocks</span> <span class="str">CLK_USB</span>]</div>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="expert" data-kw="clock tree power consumption percentage techniques low power">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q49</span>
+  <span class="q-txt">Clock trees consume up to 30–40% of dynamic power. What techniques reduce clock power?</span>
+  <span class="q-badges"><span class="diff-badge expert">Expert</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text">1. <strong>Integrated Clock Gating (ICG):</strong> Gating the clock to inactive register banks eliminates dynamic power for those FFs. Most impactful technique — can reduce total clock power by 20–60% in data-stationary designs.<br><br>
+    2. <strong>Multi-level clock gating:</strong> Gate at both register level and module level (coarser granularity saves more power when large blocks are inactive).<br><br>
+    3. <strong>Clock domain isolation:</strong> Power-down entire clock domains (clock shutdown) for blocks that are power-gated.<br><br>
+    4. <strong>Minimum-buffer CTS:</strong> Reduce the number of clock buffers by allowing slightly more skew — traded for power. H-tree topologies can be more efficient than fishbone for uniform cell distribution.<br><br>
+    5. <strong>Low-power CTS cells:</strong> Use library cells with lower drive strength where the load allows, reducing short-circuit current.<br><br>
+    6. <strong>Frequency reduction:</strong> Clock gating at module level, lower frequency for sub-blocks (DVFS).<br><br>
+    7. <strong>Resonant clocking:</strong> Advanced technique using inductors to recycle clock energy. Used in server processors.</div>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="clock" data-diff="expert" data-kw="clock mesh vs clock tree skew power area tradeoff">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q50</span>
+  <span class="q-txt">What is a clock mesh vs a clock tree? When would you choose a clock mesh?</span>
+  <span class="q-badges"><span class="diff-badge expert">Expert</span><span class="cat-badge-sm cat-clock">Clocks</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>Clock tree:</strong> Hierarchical buffer tree from clock source to FFs. Good skew control with careful design. Compact routing. Standard for most designs.<br><br>
+    <strong>Clock mesh (grid):</strong> A distributed resistive mesh of wires across the chip, with multiple driver points feeding the grid. FFs connect to the nearest mesh node.<br><br>
+    <strong>Clock mesh advantages:</strong><br>
+    — Extremely low skew (mesh averages out local delays) — typically &lt;20ps compared to 50–200ps for trees<br>
+    — Very robust to process variation — mesh impedance averages out local variations<br>
+    — Better SI noise immunity (distributed low-impedance clock)<br><br>
+    <strong>Clock mesh disadvantages:</strong><br>
+    — Very high power: mesh is always active, large RC → high switching power<br>
+    — Large routing area (full-chip metal grid)<br>
+    — Complex design and analysis<br><br>
+    <strong>Use cases:</strong> High-performance microprocessors (Intel, AMD), designs requiring ultra-low skew at GHz+ frequencies, custom digital circuits at advanced nodes.</div>
+  </div>
+</div></div>
+</div>
+
+</div><!-- end clock grid -->
+
+<!-- ══════════════════════════════════════════════════════════════
+     SECTION 3 — TIMING PATHS
+══════════════════════════════════════════════════════════════ -->
+<div class="sec-hd" data-sec="path">
+  <h2 style="color:var(--c-path)">Timing Paths &amp; Checks</h2>
+  <span class="sec-cnt" style="background:var(--c-path-bg);border:1px solid var(--c-path-bd);color:var(--c-path)">20 questions</span>
+</div>
+<div class="q-grid">
+
+<div class="qc" data-cat="path" data-diff="easy" data-kw="launch capture edge single multicycle">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q51</span>
+  <span class="q-txt">What are launch edge and capture edge? For a 1GHz clock, what are the default edges for setup and hold?</span>
+  <span class="q-badges"><span class="diff-badge easy">Easy</span><span class="cat-badge-sm cat-path">Paths</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="ans-text"><strong>Launch edge:</strong> The clock edge that causes the launch FF to send (launch) data from its Q output. Data starts propagating through combinational logic from this moment.<br><br>
+    <strong>Capture edge:</strong> The clock edge at the capture FF that samples the incoming data. This is when the setup/hold check is performed.<br><br>
+    <strong>For a 1GHz clock (T = 1.0ns):</strong><br>
+    — <strong>Setup check:</strong> Launch at t=0ns, capture at t=1.0ns (one full period later). The data has 1.0ns (minus Tsu, Tco, uncertainty) to travel.<br>
+    — <strong>Hold check:</strong> Both launch and capture happen at the SAME edge (t=0ns). The data from the launch FF must NOT arrive at the capture FF before the same-cycle edge completes its capture. Hold check uses minimum delays.</div>
+  </div>
+  <div class="fu-box">
+    <div class="block-lbl">Follow-up Questions</div>
+    <ul class="fu-list">
+      <li onclick="togFU(this)"><span class="fu-q">For a multicycle path of 2 (setup N=2), where is the capture edge?</span><div class="fu-ans">The capture edge moves to t=2.0ns (2 periods after launch). The hold check must also be adjusted with set_multicycle_path -hold 1 to move the hold reference from t=0 to t=1.0ns (one period behind the new capture edge). Without -hold 1, hold is checked at t=0 — causing phantom hold violations.</div></li>
+    </ul>
+  </div>
+</div></div>
+</div>
+
+<div class="qc" data-cat="path" data-diff="medium" data-kw="arrival time required time calculation step by step">
+<div class="qc-hd" onclick="tog(this)">
+  <span class="q-num">Q52</span>
+  <span class="q-txt">A path has: clock latency 0.5ns, CK-to-Q 0.1ns, logic+routing 0.7ns, setup time 0.05ns, uncertainty 0.15ns, period 1.5ns, skew +0.1ns. What is the setup slack?</span>
+  <span class="q-badges"><span class="diff-badge medium">Medium</span><span class="cat-badge-sm cat-path">Paths</span></span>
+  <span class="expand-ico">▼</span>
+</div>
+<div class="qc-body"><div class="qc-inner">
+  <div class="ans-block">
+    <div class="block-lbl">Answer</div>
+    <div class="formula-box">Data Arrival Time:
+  Launch edge:          0.00 ns
+  Clock latency (launch):  0.50 ns   → 0.50
+  CK-to-Q:             0.10 ns   → 0.60
+  Logic + routing:     0.70 ns   → 1.30 ns
+
+Data Required Time:
+  Capture edge:         1.50 ns  (1 period later)
+  Clock latency (capture): 0.50 + 0.10 = 0.60 ns  (skew +0.1 = capture 0.1ns later)
+  Total at capture CK: 1.50 + 0.60 = 2.10 ns
+  − Setup time:        −0.05 ns  → 2.05
+  −
